@@ -216,6 +216,6 @@ usa quelle francesi. I testi originali delle due lingue, presi dai nib e da `Loc
 sono raccolti con la traduzione italiana in `i18n/stringhe.json`, da cui
 `tools/genera_traduzioni.py` genera i file per macOS e per il web.
 
-Differenze rispetto all'originale: il link in basso porta al repository della ricostruzione invece
-che al sito di Daedale, che non esiste più nella forma di allora; sul web il pannello si adatta agli
+Differenze rispetto all'originale: la riga di copyright di Daedale non è più un link, e sotto c'è
+un link al repository della ricostruzione; sul web il pannello si adatta agli
 schermi stretti e la scheda Avanzate permette di scegliere la lingua.
