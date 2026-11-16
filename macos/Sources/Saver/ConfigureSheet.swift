@@ -276,7 +276,16 @@ final class ConfigureSheetController: NSObject {
     private func label(_ key: String, _ frameKey: String) -> NSTextField {
         let f = NSTextField(labelWithString: L10n.t(key))
         f.alignment = .right
-        f.frame = layout[frameKey]
+        var r = layout[frameKey]
+        // Se il testo tradotto è più lungo del campo originale, lo si allarga verso sinistra
+        // tenendo fermo il bordo destro, che è allineato al controllo.
+        let needed = ceil(f.intrinsicContentSize.width)
+        if needed > r.width {
+            let grow = min(needed - r.width, r.minX)
+            r.origin.x -= grow
+            r.size.width += grow
+        }
+        f.frame = r
         return f
     }
 

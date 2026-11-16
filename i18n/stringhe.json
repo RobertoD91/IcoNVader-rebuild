@@ -6,25 +6,25 @@
     "tab.animation":         { "en": "Animation", "fr": "Animation", "it": "Animazione" },
     "tab.advanced":          { "en": "Advanced", "fr": "Avancé", "it": "Avanzate" },
 
-    "label.icons":           { "en": "Icons:", "fr": "Icônes :", "it": "Icone:" },
+    "label.icons":           { "en": "Icons:", "fr": "Icônes :", "it": "Set di icone:" },
     "label.iconSize":        { "en": "Icons size:", "fr": "Taille des icônes :", "it": "Dimensione icone:" },
     "end.small":             { "en": "Small", "fr": "Petite", "it": "Piccole" },
     "end.large":             { "en": "Large", "fr": "Grande", "it": "Grandi" },
     "label.background":      { "en": "Background color:", "fr": "Couleur d'arrière-plan :", "it": "Colore di sfondo:" },
 
-    "label.invasion":        { "en": "Invasion Level:", "fr": "Niveau d'invasion :", "it": "Livello d'invasione:" },
-    "end.scattered":         { "en": "Scattered Remains", "fr": "Restes épars", "it": "Resti sparsi" },
-    "end.rampant":           { "en": "Rampant", "fr": "Grouillant", "it": "Dilagante" },
-    "label.life":            { "en": "Life expectancy:", "fr": "Espérance de vie :", "it": "Aspettativa di vita:" },
-    "end.bornDead":          { "en": "Born Dead", "fr": "Mort-né", "it": "Nate morte" },
-    "end.ancient":           { "en": "Ancient", "fr": "Ancien", "it": "Antiche" },
+    "label.invasion":        { "en": "Invasion Level:", "fr": "Niveau d'invasion :", "it": "Livello di invasione:" },
+    "end.scattered":         { "en": "Scattered Remains", "fr": "Restes épars", "it": "Pochi superstiti" },
+    "end.rampant":           { "en": "Rampant", "fr": "Grouillant", "it": "Brulicante" },
+    "label.life":            { "en": "Life expectancy:", "fr": "Espérance de vie :", "it": "Durata della vita:" },
+    "end.bornDead":          { "en": "Born Dead", "fr": "Mort-né", "it": "Effimere" },
+    "end.ancient":           { "en": "Ancient", "fr": "Ancien", "it": "Millenarie" },
     "label.speed":           { "en": "Speed:", "fr": "Vitesse :", "it": "Velocità:" },
     "end.slow":              { "en": "Slow", "fr": "Lente", "it": "Lenta" },
     "end.fast":              { "en": "Fast", "fr": "Rapide", "it": "Veloce" },
     "label.behavior":        { "en": "Icons Behavior:", "fr": "Comportement des icônes :", "it": "Comportamento delle icone:" },
-    "label.randomEvery":     { "en": "Random behavior every:", "fr": "Comportement aléatoire toutes les :", "it": "Comportamento casuale ogni:" },
+    "label.randomEvery":     { "en": "Random behavior every:", "fr": "Comportement aléatoire toutes les :", "it": "Cambia comportamento ogni:" },
 
-    "label.renderer":        { "en": "Render through:", "fr": "Afficher avec :", "it": "Disegna con:" },
+    "label.renderer":        { "en": "Render through:", "fr": "Afficher avec :", "it": "Motore grafico:" },
     "label.language":        { "en": "Language:", "fr": "Langue :", "it": "Lingua:" },
     "language.auto":         { "en": "Automatic", "fr": "Automatique", "it": "Automatica" },
 
@@ -45,17 +45,17 @@
     "behavior.Fireworks":    { "en": "Fireworks", "fr": "Feux d'artifice", "it": "Fuochi d'artificio" },
     "behavior.GameOfLife":   { "en": "Game Of Life", "fr": "Jeu de la Vie", "it": "Gioco della vita" },
     "behavior.Hypnosis":     { "en": "Hypnosis", "fr": "Hypnose", "it": "Ipnosi" },
-    "behavior.Jumpers":      { "en": "Jumpers", "fr": "Sauteurs", "it": "Saltatori" },
+    "behavior.Jumpers":      { "en": "Jumpers", "fr": "Sauteurs", "it": "Rimbalzi" },
 
     "message.invalidIconSet": {
       "en": "No icons could be loaded from the selected icon set.\n\nPlease use the preferences panel to select another one.",
       "fr": "Aucune icône n'a pu être chargée à partir de l'ensemble d'icônes sélectionné.\n\nVeuillez ouvrir le panneau de préférences pour en choisir un autre.",
-      "it": "Non è stato possibile caricare alcuna icona dal set selezionato.\n\nApri il pannello delle preferenze per sceglierne un altro."
+      "it": "Impossibile caricare le icone del set selezionato.\n\nScegline un altro nelle opzioni del salvaschermo."
     },
     "message.noSet":         { "en": "No set available", "fr": "Aucun ensemble disponible", "it": "Nessun set disponibile" },
 
     "credit.original":       { "en": "IcoNVader 3.0 © 2004-2006 Daedale, All rights reserved.", "fr": "IcoNVader 3.0 © 2004-2006 Daedale, Tous droits réservés.", "it": "IcoNVader 3.0 © 2004-2006 Daedale, Tutti i diritti riservati." },
-    "credit.rebuild":        { "en": "Unofficial rebuild from the original binary:", "fr": "Reconstruction non officielle à partir du binaire d'origine :", "it": "Ricostruzione non ufficiale dal binario originale:" },
+    "credit.rebuild":        { "en": "Unofficial rebuild from the original binary:", "fr": "Reconstruction non officielle à partir du binaire d'origine :", "it": "Ricostruzione non ufficiale a partire dal binario originale:" },
 
     "web.subtitle":          { "en": "Web rebuild of the IcoNVader 3.0 screen saver", "fr": "Reconstruction web de l'économiseur d'écran IcoNVader 3.0", "it": "Ricostruzione web del salvaschermo IcoNVader 3.0" },
     "web.hint":              { "en": "{behavior} · P = options · F = full screen", "fr": "{behavior} · P = options · F = plein écran", "it": "{behavior} · P = opzioni · F = schermo intero" },
