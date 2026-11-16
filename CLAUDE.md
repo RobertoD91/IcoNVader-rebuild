@@ -18,7 +18,7 @@ Il repository è dedicato solo a IcoNVader e contiene due cose:
    - `macos/`: salvaschermo per macOS 11+ in Swift, universale arm64 + x86_64. `Sources/Core` è il porting dei comportamenti (solo Foundation), `Sources/Saver` la vista `ScreenSaverView`, il disegno e il pannello opzioni (AppKit). Il progetto Xcode si genera con XcodeGen da `project.yml` e non è versionato.
    - `tools/`: script per rigenerare il disassemblato annotato e le icone PNG.
 
-Il `README.md` alla radice è la presentazione per gli utenti (download, installazione, uso). Il codice della ricostruzione è sotto licenza MIT (`LICENSE`), che esclude esplicitamente il materiale di Daedale (bundle, binario, icone e loro conversioni).
+Il `README.md` alla radice è la presentazione per gli utenti (download, installazione, uso), in inglese; `README.it.md` è la stessa in italiano: vanno tenuti allineati. Il codice della ricostruzione è sotto licenza MIT (`LICENSE`), che esclude esplicitamente il materiale di Daedale (bundle, binario, icone e loro conversioni).
 
 ## Comandi
 
