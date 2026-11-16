@@ -75,7 +75,8 @@ for language in ["en", "fr", "it"] {
     }
     guard let tabView = content.subviews.compactMap({ $0 as? NSTabView }).first else { fail("schede non trovate") }
     let labels = tabView.tabViewItems.map(\.label)
-    for index in 0..<tabView.numberOfTabViewItems {
+    // La prima scheda si cattura per ultima: alla prima cattura i titoli delle schede non sono ancora disegnati.
+    for index in Array(1..<tabView.numberOfTabViewItems) + [0] {
         tabView.selectTabViewItem(at: index)
         content.layoutSubtreeIfNeeded()
         guard let rep = content.bitmapImageRepForCachingDisplay(in: content.bounds) else { fail("bitmap del pannello non creata") }
