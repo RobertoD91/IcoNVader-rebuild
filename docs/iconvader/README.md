@@ -152,8 +152,9 @@ quelle di Cocoa; solo il renderer le converte per il canvas.
 - **Divisioni per zero**: alcuni divisori (`maxSpeed` in Fireworks, `LifeExpectancy/100` in
   Game Of Life…) sono limitati a un minimo di 1. Con i limiti del pannello non si arrivava mai a zero,
   tranne che per schermi alti meno di 127 punti.
-- **Renderer unico**: Quartz e OpenGL producevano la stessa immagine, quindi c'è un solo renderer
-  Canvas 2D e l'opzione "Render through" non è stata riprodotta.
+- **Renderer unico**: Quartz e OpenGL producevano la stessa immagine, quindi c'è un solo motore di
+  disegno: Canvas 2D sul web, Core Graphics (cioè Quartz 2D) su macOS. Il menu "Render through" della
+  scheda Avanzate mostra solo quello.
 - **Preferenze** salvate nel `localStorage` del browser invece che in `NSUserDefaults`.
 - **Numeri casuali**: `Math.random()` al posto di `random()` della libc. La sequenza è diversa, ma la
   distribuzione è la stessa.
@@ -180,7 +181,7 @@ macOS 11 o successivo (Apple Silicon e Intel). È divisa in due parti:
   Foundation. Si compila anche su Linux.
 - `Sources/Saver/`: la vista `ScreenSaverView` (classe `IcoNVaderRestoredView`), il disegno con
   Core Graphics (la stessa trasformazione di `QuartzRenderer`), le preferenze con `ScreenSaverDefaults`
-  e il pannello opzioni costruito da codice. Come l'originale, cerca i set di icone anche in
+  e il pannello opzioni (vedi sotto). Come l'originale, cerca i set di icone anche in
   `/Library/Application Support/IcoNVader/Icon Sets/` e `~/Library/Application Support/IcoNVader/Icon Sets/`.
 
 Le icone sono i file `.icns` originali, copiati nel bundle senza conversioni.
@@ -189,3 +190,32 @@ Le icone sono i file `.icns` originali, copiati nel bundle senza conversioni.
 JavaScript (Node) con lo stesso generatore casuale con seme (mulberry32) e confronta lo stato di
 tutti gli attori dopo 600 fotogrammi: posizione, angolo, scala, opacità e icona devono coincidere
 fino alla sesta cifra decimale. Il controllo copre 2 risoluzioni e 3 semi per comportamento.
+
+## 6. Il pannello opzioni e le lingue
+
+Il pannello è ricostruito dal nib originale `IVPreferences.nib`. Il file `objects.nib` è in formato
+*typedstream* (NSArchiver) e si decodifica con il pacchetto Python `pytypedstream`:
+
+```bash
+python -m typedstream decode IcoNVader.saver/Contents/Resources/English.lproj/IVPreferences.nib/objects.nib
+```
+
+Ne escono l'albero delle viste con classe, posizione e testo di ogni controllo e i collegamenti con
+`IVPreferencesController` (outlet e azioni). La finestra è di 456×357 punti e contiene una vista a
+schede con tre pagine:
+
+| Scheda | Controlli |
+|---|---|
+| **Appearance** | set di icone, striscia con le icone del set (`oIconTable`: una riga, una colonna per icona), dimensione delle icone, colore di sfondo |
+| **Animation** | livello d'invasione, aspettativa di vita, velocità, comportamento, intervallo del cambio casuale |
+| **Advanced** | motore di disegno (Quartz/OpenGL) con il suo logo, riga di copyright cliccabile verso `http://www.daedale.com/` (`IVLinkTextField`) |
+
+L'originale aveva un nib per lingua (inglese e francese) con posizioni diverse per far stare i
+testi francesi, più lunghi. Il salvaschermo per macOS usa le coordinate di entrambi; per l'italiano
+usa quelle francesi. I testi originali delle due lingue, presi dai nib e da `Localizable.strings`,
+sono raccolti con la traduzione italiana in `i18n/stringhe.json`, da cui
+`tools/genera_traduzioni.py` genera i file per macOS e per il web.
+
+Differenze rispetto all'originale: il link in basso porta al repository della ricostruzione invece
+che al sito di Daedale, che non esiste più nella forma di allora; sul web il pannello si adatta agli
+schermi stretti e la scheda Avanzate permette di scegliere la lingua.

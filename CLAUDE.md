@@ -14,7 +14,7 @@ Il repository è dedicato solo a IcoNVader e contiene due cose:
 1. **Il bundle originale** `IcoNVader.saver`, conservato così come era distribuito e senza sorgenti. Non va modificato.
 2. **Il restauro** (esperimento didattico di reverse engineering): il comportamento del binario è stato ricostruito e reimplementato due volte.
    - `docs/iconvader/README.md`: architettura dell'originale, preferenze, metodo, differenze e stranezze mantenute. `docs/iconvader/comportamenti/*.md` contiene lo pseudocodice dettagliato di ogni comportamento (in inglese).
-   - `web/iconvader/`: ricostruzione in JavaScript puro (Canvas 2D, script classici, nessuna dipendenza), pubblicata su GitHub Pages (https://robertodisanto.it/salvaschermi-macos/).
+   - `web/iconvader/`: ricostruzione in JavaScript puro (Canvas 2D, script classici, nessuna dipendenza), pubblicata su GitHub Pages (https://robertodisanto.it/IcoNVader-rebuild/).
    - `macos/`: salvaschermo per macOS 11+ in Swift, universale arm64 + x86_64. `Sources/Core` è il porting dei comportamenti (solo Foundation), `Sources/Saver` la vista `ScreenSaverView`, il disegno e il pannello opzioni (AppKit). Il progetto Xcode si genera con XcodeGen da `project.yml` e non è versionato.
    - `tools/`: script per rigenerare il disassemblato annotato e le icone PNG.
 
@@ -30,6 +30,12 @@ cd macos && xcodegen generate         # genera IcoNVader.xcodeproj (solo macOS)
 ```
 
 Per un singolo caso: `swiftc -o /tmp/t macos/Sources/Core/*.swift macos/Tests/main.swift && /tmp/t DNA 600 1` e `node macos/Tests/reference.js DNA 600 1` devono stampare righe identiche.
+
+## Traduzioni e pannello opzioni
+
+- Tutti i testi dell'interfaccia stanno in `i18n/stringhe.json` (inglese e francese sono quelli originali del bundle, più l'italiano). `python3 tools/genera_traduzioni.py` genera `macos/Resources/<lingua>.lproj/Localizable.strings` e `web/iconvader/js/i18n.js`: non modificare a mano i file generati. Il workflow macOS fallisce se non sono aggiornati (`--verifica`).
+- Il pannello macOS (`ConfigureSheet.swift`) replica `IVPreferences.nib`: le coordinate dei controlli vengono dai nib `English.lproj` e `French.lproj` (decodificati con il pacchetto Python `pytypedstream`: `python -m typedstream decode objects.nib`); l'italiano usa la disposizione francese. La lingua segue il sistema; per i collaudi si forza con la variabile d'ambiente `ICONVADER_LANG`.
+- Sul web la lingua è nelle preferenze (`language`: `auto`, `en`, `fr`, `it`) e si può passare con `?lang=`.
 
 ## Doppia implementazione: regola fondamentale
 
