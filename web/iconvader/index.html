@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IcoNVader</title>
+  <style>
+    :root {
+      --panel-bg: rgba(28, 28, 32, 0.92);
+      --panel-fg: #ececf0;
+      --panel-muted: #a0a0aa;
+      --panel-line: rgba(255, 255, 255, 0.14);
+      --accent: #d83b3b;
+      color-scheme: dark;
+    }
+    html, body { margin: 0; height: 100%; overflow: hidden; background: #000; }
+    body { font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif; color: var(--panel-fg); }
+    canvas { display: block; position: fixed; inset: 0; }
+    body.idle, body.idle * { cursor: none; }
+
+    #hint {
+      position: fixed; left: 16px; bottom: 16px; padding: 6px 10px; border-radius: 6px;
+      background: rgba(0, 0, 0, 0.55); color: var(--panel-muted); font-size: 12px;
+      transition: opacity .6s; pointer-events: none;
+    }
+    body.idle #hint { opacity: 0; }
+
+    #toggle {
+      position: fixed; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 50%;
+      border: 1px solid var(--panel-line); background: rgba(0, 0, 0, 0.55); color: var(--panel-fg);
+      font-size: 20px; cursor: pointer; transition: opacity .6s;
+    }
+    body.idle #toggle { opacity: 0; }
+
+    #panel {
+      position: fixed; top: 16px; right: 16px; width: min(360px, calc(100vw - 32px));
+      max-height: calc(100vh - 32px); overflow: auto; box-sizing: border-box;
+      background: var(--panel-bg); border: 1px solid var(--panel-line); border-radius: 12px;
+      padding: 16px 18px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    }
+    #panel[hidden] { display: none; }
+    #panel h1 { margin: 0 0 2px; font-size: 18px; letter-spacing: .02em; }
+    #panel .sub { margin: 0 0 14px; color: var(--panel-muted); font-size: 12px; }
+    #panel fieldset { border: 0; border-top: 1px solid var(--panel-line); margin: 0; padding: 12px 0 4px; }
+    #panel legend { padding: 0; color: var(--panel-muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+    .row { display: grid; grid-template-columns: 1fr; gap: 4px; margin: 8px 0 12px; }
+    .row label { display: flex; justify-content: space-between; gap: 8px; }
+    .row output { color: var(--panel-muted); font-variant-numeric: tabular-nums; }
+    .ends { display: flex; justify-content: space-between; color: var(--panel-muted); font-size: 11px; }
+    select, input[type=color] {
+      width: 100%; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--panel-line);
+      background: rgba(255, 255, 255, 0.06); color: var(--panel-fg); font: inherit; box-sizing: border-box;
+    }
+    input[type=color] { height: 34px; padding: 2px; }
+    input[type=range] { width: 100%; accent-color: var(--accent); }
+    .check { display: flex; align-items: center; gap: 8px; margin: 8px 0; }
+    .buttons { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
+    button.b {
+      padding: 7px 14px; border-radius: 6px; border: 1px solid var(--panel-line); font: inherit;
+      background: rgba(255, 255, 255, 0.08); color: var(--panel-fg); cursor: pointer;
+    }
+    button.b.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .icons { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .icons img { width: 32px; height: 32px; }
+    .credit { margin: 12px 0 0; color: var(--panel-muted); font-size: 11px; }
+  </style>
+</head>
+<body>
+  <canvas id="screen" aria-label="Animazione del salvaschermo IcoNVader"></canvas>
+  <div id="hint">Comportamento: <span id="current">…</span> · P = opzioni · F = schermo intero</div>
+  <button id="toggle" type="button" title="Opzioni (P)" aria-controls="panel" aria-expanded="false">⚙︎</button>
+
+  <form id="panel" hidden>
+    <h1>IcoNVader</h1>
+    <p class="sub">Ricostruzione web del salvaschermo IcoNVader 3.0</p>
+
+    <fieldset>
+      <legend>Generale</legend>
+      <div class="row">
+        <label for="behavior">Comportamento delle icone</label>
+        <select id="behavior" name="behavior"></select>
+      </div>
+      <div class="row">
+        <label for="randomBehaviorChangeInterval">Cambia comportamento ogni</label>
+        <select id="randomBehaviorChangeInterval" name="randomBehaviorChangeInterval"></select>
+      </div>
+      <div class="row">
+        <label for="lifeExpectancy">Aspettativa di vita <output for="lifeExpectancy"></output></label>
+        <input id="lifeExpectancy" name="lifeExpectancy" type="range" min="100" max="5000" step="1">
+        <div class="ends"><span>Nate morte</span><span>Antiche</span></div>
+      </div>
+      <div class="row">
+        <label for="density">Livello d'invasione <output for="density"></output></label>
+        <input id="density" name="density" type="range" min="0" max="100" step="1">
+        <div class="ends"><span>Resti sparsi</span><span>Dilagante</span></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Animazione</legend>
+      <div class="row">
+        <label for="animationSpeed">Velocità <output for="animationSpeed"></output></label>
+        <input id="animationSpeed" name="animationSpeed" type="range" min="10" max="60" step="1">
+        <div class="ends"><span>Lenta</span><span>Veloce</span></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Aspetto</legend>
+      <div class="row">
+        <label for="iconSet">Icone</label>
+        <select id="iconSet" name="iconSet"></select>
+        <div class="icons" id="iconPreview"></div>
+      </div>
+      <div class="row">
+        <label for="scaleFactor">Dimensione icone <output for="scaleFactor"></output></label>
+        <input id="scaleFactor" name="scaleFactor" type="range" min="0.1" max="1" step="0.01">
+        <div class="ends"><span>Piccole</span><span>Grandi</span></div>
+      </div>
+      <div class="row">
+        <label for="backgroundColor">Colore di sfondo</label>
+        <input id="backgroundColor" name="backgroundColor" type="color">
+      </div>
+    </fieldset>
+
+    <div class="buttons">
+      <button class="b" type="button" id="reset">Predefiniti</button>
+      <button class="b" type="button" id="cancel">Annulla</button>
+      <button class="b primary" type="submit">OK</button>
+    </div>
+    <p class="credit">IcoNVader 3.0 © 2004-2006 Daedale. Ricostruzione a scopo didattico.</p>
+  </form>
+
+  <script src="js/core.js"></script>
+  <script src="js/behaviors/comets.js"></script>
+  <script src="js/behaviors/fireworks.js"></script>
+  <script src="js/behaviors/gameoflife.js"></script>
+  <script src="js/behaviors/hypnosis.js"></script>
+  <script src="js/behaviors/dna.js"></script>
+  <script src="js/behaviors/jumpers.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
