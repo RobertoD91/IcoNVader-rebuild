@@ -1,0 +1,28 @@
+MIT License
+
+Copyright (c) 2026 RobertoD91
+
+The MIT License below applies only to the code and documentation written for this
+rebuild: web/, macos/, tools/, i18n/, docs/, .github/ and the other files created in
+this repository. It does NOT apply to the original IcoNVader 3.0 material by Daedale
+(the IcoNVader.saver bundle, its binary, its icons and images, and any copy or
+conversion of them, such as web/iconvader/icons/ and the icons included in the
+compiled screen saver), which remains the property of its respective rights holders.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

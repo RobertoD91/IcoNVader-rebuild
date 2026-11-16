@@ -76,7 +76,7 @@ Per compilarne una nuova con GitHub Actions:
 1. vai su **Actions → Compila salvaschermo macOS → Run workflow**;
 2. a fine esecuzione scarica l'artefatto **IcoNVader-saver** (contiene `IcoNVader-saver.zip`).
 
-Spuntando **release** (e indicando un **tag**, per esempio `v3.1.0`) lo zip viene pubblicato anche
+Spuntando **release** (e indicando un **tag**, per esempio `v3.0.3`) lo zip viene pubblicato anche
 come release GitHub. L'artefatto **screenshot** contiene un'immagine di ogni comportamento e di ogni
 scheda del pannello, in tutte le lingue, generata durante il collaudo.
 
@@ -150,3 +150,10 @@ approvato. È un progetto didattico di conservazione di un software non più dis
 mantenuto: il binario e le icone incluse sono quelli del pacchetto originale e restano di
 proprietà dei rispettivi titolari. Il codice della ricostruzione (versione web, salvaschermo per
 macOS e strumenti) è scritto da zero e non contiene codice dell'originale.
+
+## Licenza
+
+Il codice e la documentazione della ricostruzione sono distribuiti con licenza **MIT**
+(vedi [`LICENSE`](LICENSE)). La licenza **non** si applica al materiale originale di Daedale: il
+bundle `IcoNVader.saver`, il binario, le icone e le immagini, comprese le loro copie e conversioni
+(`web/iconvader/icons/` e le icone incluse nel salvaschermo compilato).
