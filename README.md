@@ -1,20 +1,10 @@
-# Salvaschermi macOS
+# IcoNVader restaurato
 
-Archivio di vecchi salvaschermi per Mac e restauro di uno di questi, **IcoNVader**, a partire dal
-solo binario compilato.
+Restauro del salvaschermo per Mac **IcoNVader 3.0** (Daedale, 2004-2006) a partire dal solo
+binario compilato. Il bundle originale, `IcoNVader.saver`, è conservato così come era distribuito
+e non viene modificato.
 
-| Salvaschermo | Autore | Versione | Funziona sui Mac di oggi? |
-|---|---|---|---|
-| `IcoNVader.saver` | Daedale (2004-2006) | 3.0 | No: solo PowerPC e Intel a 32 bit. **Restaurato**, vedi sotto |
-| [`LotsaSnow.saver`](https://wakaba.c3.cx/s/lotsablankers/lotsasnow.html) | Dag Ågren | 1.6 | Solo Intel (x86_64) |
-| [`LotsaWater.saver`](https://wakaba.c3.cx/s/lotsablankers/lotsawater.html) | Dag Ågren | 1.8 | Solo Intel (x86_64) |
-
-I bundle originali sono conservati così come sono stati distribuiti e non vengono modificati.
-LotsaSnow e LotsaWater hanno ancora una pagina ufficiale sul sito dell'autore:
-[LotsaSnow](https://wakaba.c3.cx/s/lotsablankers/lotsasnow.html) e
-[LotsaWater](https://wakaba.c3.cx/s/lotsablankers/lotsawater.html).
-
-## IcoNVader restaurato
+## Il progetto
 
 IcoNVader riempie lo schermo di icone animate in sei modi diversi: **Comets**, **Fireworks**,
 **Game Of Life**, **Hypnosis**, **DNA** e **Jumpers**. L'originale non si carica più da macOS 10.15
@@ -98,7 +88,7 @@ cd macos && xcodegen generate && open IcoNVader.xcodeproj
 ## Struttura del repository
 
 ```
-IcoNVader.saver/ LotsaSnow.saver/ LotsaWater.saver/   bundle originali (non modificati)
+IcoNVader.saver/                 bundle originale (non modificato)
 docs/iconvader/                  reverse engineering: architettura, preferenze, metodo
 docs/iconvader/comportamenti/    pseudocodice dettagliato di ogni comportamento (in inglese)
 web/iconvader/                   versione web
@@ -127,5 +117,3 @@ macos/Tests/compare.sh             # confronto tra Swift e JavaScript (servono s
 
 IcoNVader 3.0 è © 2004-2006 Daedale. Questo è un progetto didattico di conservazione di un software
 non più distribuito né mantenuto; le icone incluse sono quelle del pacchetto originale.
-LotsaSnow e LotsaWater sono © Dag Ågren ([pagina di LotsaSnow](https://wakaba.c3.cx/s/lotsablankers/lotsasnow.html),
-[pagina di LotsaWater](https://wakaba.c3.cx/s/lotsablankers/lotsawater.html)).
