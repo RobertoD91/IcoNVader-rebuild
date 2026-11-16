@@ -1,4 +1,4 @@
-# IcoNVader restaurato
+# IcoNVader - rebuild
 
 Restauro del salvaschermo per Mac **IcoNVader 3.0** (Daedale, 2004-2006) a partire dal solo
 binario compilato. Il bundle originale, `IcoNVader.saver`, è conservato così come era distribuito
