@@ -82,20 +82,28 @@ If you tick **release** (and enter a **tag**, for example `v3.0.3`), the zip is 
 GitHub release. The **screenshot** artifact contains a picture of every behavior and of every tab of
 the options panel, in every language, taken during the automated test.
 
-**Install.** The bundle is ad-hoc signed and not notarized, so macOS blocks it the first time.
-After unzipping:
+**Install.** Unzip it and double-click `IcoNVader.saver`: it is installed for the current user
+in `~/Library/Screen Savers/`. Then pick it in **System Settings → Screen Saver**; the **Options**
+button opens the panel in your system language.
+
+The release notes say whether that build is signed with a Developer ID and notarized by Apple. If it
+is not (ad-hoc signature), macOS blocks it the first time; remove the quarantine flag before
+installing:
 
 ```bash
 xattr -dr com.apple.quarantine ~/Downloads/IcoNVader.saver
 ```
 
+**Updating.** macOS keeps the previous version loaded until the screen saver process restarts. After
+installing a new version, close System Settings and run:
+
 ```bash
-open ~/Downloads/IcoNVader.saver
+killall legacyScreenSaver
 ```
 
-Double-clicking it (or `open`) installs it for the current user in `~/Library/Screen Savers/`.
-Then pick it in **System Settings → Screen Saver**; the **Options** button opens the panel in your
-system language.
+**Signing (maintainers).** The build workflow signs and notarizes the bundle when the repository
+has the Developer ID certificate and an App Store Connect API key as secrets; see
+[`docs/firma-macos.md`](docs/firma-macos.md) (in Italian).
 
 **Custom icon sets.** Just like the original, create a folder of `.icns` or `.png` files in
 `~/Library/Application Support/IcoNVader/Icon Sets/<Set name>/` and it will show up in the

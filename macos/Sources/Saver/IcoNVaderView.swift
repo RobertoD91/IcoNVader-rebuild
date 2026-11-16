@@ -6,7 +6,12 @@
 // coordinate sono già quelle di Cocoa usate dai comportamenti.
 
 import AppKit
+import os
 import ScreenSaver
+
+/// Log di diagnostica, visibile con:
+/// log stream --predicate 'subsystem == "io.github.robertod91.IcoNVader"'
+let ivLog = Logger(subsystem: "io.github.robertod91.IcoNVader", category: "saver")
 
 @objc(IcoNVaderRestoredView)
 final class IcoNVaderView: ScreenSaverView {
@@ -45,6 +50,7 @@ final class IcoNVaderView: ScreenSaverView {
     // MARK: - Ciclo di vita (-[IVScreenView startAnimation])
 
     override func startAnimation() {
+        ivLog.info("startAnimation (anteprima: \(self.isPreview, privacy: .public))")
         super.startAnimation()
         restartBehavior()
     }
@@ -148,7 +154,15 @@ final class IcoNVaderView: ScreenSaverView {
 
     override var hasConfigureSheet: Bool { true }
 
+    /// Il sistema può leggere questa proprietà più volte prima di mostrare il pannello: si crea un
+    /// solo controller per vista e si restituisce sempre la stessa finestra, aggiornata con le
+    /// preferenze correnti. Creare ogni volta una finestra nuova liberava quella in apertura.
     override var configureSheet: NSWindow? {
+        ivLog.info("configureSheet richiesto (anteprima: \(self.isPreview, privacy: .public))")
+        if let controller = configureSheetController {
+            controller.reload(with: PreferencesStore.load())
+            return controller.window
+        }
         let controller = ConfigureSheetController(preferences: PreferencesStore.load()) { [weak self] saved in
             guard let self else { return }
             if let saved {
@@ -157,6 +171,7 @@ final class IcoNVaderView: ScreenSaverView {
             }
         }
         configureSheetController = controller
+        ivLog.info("pannello opzioni creato: \(Int(controller.window.frame.width))x\(Int(controller.window.frame.height))")
         return controller.window
     }
 }

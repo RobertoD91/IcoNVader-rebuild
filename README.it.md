@@ -82,20 +82,28 @@ Spuntando **release** (e indicando un **tag**, per esempio `v3.0.3`) lo zip vien
 come release GitHub. L'artefatto **screenshot** contiene un'immagine di ogni comportamento e di ogni
 scheda del pannello, in tutte le lingue, generata durante il collaudo.
 
-**Installarlo.** Il bundle ha una firma ad-hoc e non è notarizzato, quindi macOS lo blocca al primo
-avvio. Dopo aver estratto lo zip:
+**Installarlo.** Estrai lo zip e fai doppio clic su `IcoNVader.saver`: viene installato per
+l'utente corrente in `~/Library/Screen Savers/`. Poi si sceglie in **Impostazioni di Sistema →
+Salvaschermo**; il pulsante **Opzioni** apre il pannello, nella lingua del sistema.
+
+Le note della release dicono se quella versione è firmata con Developer ID e notarizzata da Apple.
+Se non lo è (firma ad-hoc), macOS la blocca al primo avvio: prima di installarla togli
+l'attributo di quarantena:
 
 ```bash
 xattr -dr com.apple.quarantine ~/Downloads/IcoNVader.saver
 ```
 
+**Aggiornarlo.** macOS tiene caricata la versione precedente finché il processo dei salvaschermi
+non riparte. Dopo aver installato una nuova versione chiudi Impostazioni di Sistema ed esegui:
+
 ```bash
-open ~/Downloads/IcoNVader.saver
+killall legacyScreenSaver
 ```
 
-Il doppio clic (o `open`) lo installa per l'utente corrente in `~/Library/Screen Savers/`.
-Poi si sceglie in **Impostazioni di Sistema → Salvaschermo**; il pulsante **Opzioni** apre il
-pannello, nella lingua del sistema.
+**Firma (per chi mantiene il progetto).** Il workflow di compilazione firma e notarizza il bundle
+se nel repository ci sono come secret il certificato Developer ID e una chiave API di App Store
+Connect: vedi [`docs/firma-macos.md`](docs/firma-macos.md).
 
 **Set di icone personalizzati.** Come nell'originale, basta creare una cartella con file `.icns` o
 `.png` in `~/Library/Application Support/IcoNVader/Icon Sets/<Nome del set>/`: comparirà nel menu

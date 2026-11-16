@@ -108,9 +108,11 @@ final class ConfigureSheetController: NSObject {
         self.preferences = preferences
         self.completion = completion
         window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 456, height: 357),
-                          styleMask: [.titled], backing: .buffered, defer: true)
+                          styleMask: [.titled], backing: .buffered, defer: false)
         super.init()
         window.title = "IcoNVader"
+        // La finestra viene riusata a ogni apertura: non deve essere liberata alla chiusura.
+        window.isReleasedWhenClosed = false
         buildInterface()
         fill(with: preferences)
     }
@@ -391,13 +393,20 @@ final class ConfigureSheetController: NSObject {
         close(with: read())
     }
 
+    /// Riapertura del pannello: ricarica i valori salvati.
+    func reload(with prefs: IVPreferences) {
+        preferences = prefs
+        fill(with: prefs)
+    }
+
     private func close(with result: IVPreferences?) {
         NSColorPanel.shared.close()
         if let parent = window.sheetParent {
             parent.endSheet(window)
         } else {
-            window.close()
+            window.orderOut(nil)
         }
+        ivLog.info("pannello opzioni chiuso (\(result == nil ? "annulla" : "OK", privacy: .public))")
         completion(result)
     }
 }

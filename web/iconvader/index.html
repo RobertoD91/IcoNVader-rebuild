@@ -12,6 +12,7 @@
       --panel-line: rgba(0, 0, 0, 0.16);
       --tab-bg: rgba(0, 0, 0, 0.05);
       --field-bg: #ffffff;
+      --tab-btn-bg: #ffffff;         /* pieno: la linea del riquadro non deve vedersi sotto */
       --accent: #2f6fdf;
       --link: #2f6fdf;
       color-scheme: light;
@@ -24,6 +25,7 @@
         --panel-line: rgba(255, 255, 255, 0.16);
         --tab-bg: rgba(255, 255, 255, 0.06);
         --field-bg: rgba(255, 255, 255, 0.08);
+        --tab-btn-bg: #3c3c41;
         --accent: #4f8cff;
         --link: #6ea2ff;
         color-scheme: dark;
@@ -36,6 +38,7 @@
       --panel-line: rgba(255, 255, 255, 0.16);
       --tab-bg: rgba(255, 255, 255, 0.06);
       --field-bg: rgba(255, 255, 255, 0.08);
+      --tab-btn-bg: #3c3c41;
       --accent: #4f8cff;
       --link: #6ea2ff;
       color-scheme: dark;
@@ -74,7 +77,8 @@
     .tabs { display: flex; justify-content: center; margin-bottom: -11px; position: relative; z-index: 1; }
     .tabs button {
       font: inherit; color: var(--panel-fg); padding: 3px 14px; cursor: pointer;
-      background: var(--field-bg); border: 1px solid var(--panel-line); margin-left: -1px;
+      background: var(--tab-btn-bg); border: 1px solid var(--panel-line); margin-left: -1px;
+      position: relative;
     }
     .tabs button:first-child { border-radius: 6px 0 0 6px; margin-left: 0; }
     .tabs button:last-child { border-radius: 0 6px 6px 0; }

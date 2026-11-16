@@ -95,6 +95,37 @@ for language in ["en", "fr", "it"] {
 }
 unsetenv("ICONVADER_LANG")
 
+// Come fa il sistema: legge configureSheet più volte, lo presenta come foglio, lo chiude e lo riapre.
+do {
+    let host = NSWindow(contentRect: NSRect(x: 100, y: 100, width: 640, height: 480),
+                        styleMask: [.titled], backing: .buffered, defer: false)
+    host.orderFront(nil)
+    guard let view = viewClass.init(frame: NSRect(x: 0, y: 0, width: 320, height: 200), isPreview: true) else { fail("anteprima non creata") }
+    let first = view.configureSheet
+    guard let sheet = view.configureSheet, first === sheet else { fail("configureSheet restituisce finestre diverse a ogni lettura") }
+    func spin() { RunLoop.current.run(until: Date().addingTimeInterval(0.4)) }
+    func cancelButton(_ w: NSWindow) -> NSButton? {
+        func find(_ v: NSView) -> NSButton? {
+            if let b = v as? NSButton, b.keyEquivalent == "\u{1b}" { return b }
+            for sub in v.subviews { if let b = find(sub) { return b } }
+            return nil
+        }
+        return w.contentView.flatMap(find)
+    }
+    for round in 1...2 {
+        guard let s = view.configureSheet else { fail("configureSheet nil al giro \(round)") }
+        host.beginSheet(s) { _ in }
+        spin()
+        guard host.attachedSheet === s, s.isVisible else { fail("pannello non presentato come foglio (giro \(round))") }
+        guard let cancel = cancelButton(s) else { fail("pulsante Annulla non trovato") }
+        cancel.performClick(nil)
+        spin()
+        guard host.attachedSheet == nil else { fail("pannello non chiuso da Annulla (giro \(round))") }
+    }
+    host.orderOut(nil)
+    print("Pannello opzioni: aperto come foglio, chiuso e riaperto correttamente")
+}
+
 defaults.removeObject(forKey: "RandomBehavior")
 defaults.removeObject(forKey: "Behavior")
 defaults.removeObject(forKey: "IconSetName")
