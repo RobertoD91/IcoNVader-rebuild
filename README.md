@@ -51,12 +51,17 @@ set di icone: `Christmas`, `Daedale`).
 
 ### Salvaschermo per macOS
 
-**Scaricarlo.** Il salvaschermo si compila con GitHub Actions:
+**Scaricarlo.** L'ultima versione pubblicata è la
+[**release v3.0.1**](https://github.com/RobertoD91/salvaschermi-macos/releases/tag/v3.0.1):
+scarica [`IcoNVader-saver.zip`](https://github.com/RobertoD91/salvaschermi-macos/releases/download/v3.0.1/IcoNVader-saver.zip).
+Tutte le versioni sono nella pagina [Releases](https://github.com/RobertoD91/salvaschermi-macos/releases).
+
+Per compilarne una nuova con GitHub Actions:
 
 1. vai su **Actions → Compila salvaschermo macOS → Run workflow**;
 2. a fine esecuzione scarica l'artefatto **IcoNVader-saver** (contiene `IcoNVader-saver.zip`).
 
-Spuntando **release** (e indicando un **tag**, per esempio `v3.0.1`) lo zip viene pubblicato anche
+Spuntando **release** (e indicando un **tag**, per esempio `v3.0.2`) lo zip viene pubblicato anche
 come release GitHub. L'artefatto **screenshot** contiene un'immagine di ogni comportamento generata
 durante il collaudo.
 
