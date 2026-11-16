@@ -13,6 +13,10 @@ on:
         description: "Tag della release (es. v3.0.1); usato solo se release è attivo"
         type: string
         default: ""
+      notes:
+        description: "Novità della release (Markdown, in inglese); usato solo se release è attivo"
+        type: string
+        default: ""
 
 permissions:
   contents: write
@@ -149,19 +153,34 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ inputs.tag }}
+          NOTES: ${{ inputs.notes }}
         run: |
           TAG="${TAG:-v3.0.1-build${GITHUB_RUN_NUMBER}}"
           if [ "$HAS_CERT" = "true" ] && [ "$HAS_NOTARY" = "true" ]; then
-            FIRMA="Firmato con Developer ID e notarizzato da Apple: si installa con un doppio clic."
+            SIGNING="Signed with a Developer ID and notarized by Apple: install it with a double-click."
           elif [ "$HAS_CERT" = "true" ]; then
-            FIRMA="Firmato con Developer ID ma non notarizzato: al primo avvio va aperto da Impostazioni di Sistema → Privacy e sicurezza."
+            SIGNING="Signed with a Developer ID but not notarized: the first time, allow it in System Settings → Privacy & Security."
           else
-            FIRMA="Firma ad-hoc: vedi il README per l'installazione."
+            SIGNING="Ad-hoc signed and not notarized: remove the quarantine flag before installing (see the README)."
           fi
+          # Note in inglese: novità passate dall'input "notes" + parte fissa
+          {
+            if [ -n "$NOTES" ]; then printf '%s\n\n' "$NOTES"; fi
+            echo "## Download"
+            echo
+            echo "\`IcoNVader-saver.zip\` — the rebuilt IcoNVader screen saver, universal (Apple Silicon + Intel), macOS 11 or later."
+            echo
+            echo "**Signature:** $SIGNING"
+            echo
+            echo "**Updating from a previous version:** after installing, quit System Settings and run \`killall legacyScreenSaver\`, otherwise macOS keeps the old version loaded."
+            echo
+            echo "Unofficial rebuild, not affiliated with Daedale. IcoNVader 3.0 © 2004-2006 Daedale."
+          } > "$RUNNER_TEMP/release-notes.md"
+          cat "$RUNNER_TEMP/release-notes.md"
           gh release create "$TAG" build/IcoNVader-saver.zip \
             --target "$GITHUB_SHA" \
-            --title "IcoNVader per macOS ($TAG)" \
-            --notes "Salvaschermo IcoNVader ricostruito, universale (Apple Silicon + Intel), macOS 11 o successivo. $FIRMA"
+            --title "IcoNVader for macOS ($TAG)" \
+            --notes-file "$RUNNER_TEMP/release-notes.md"
 
       - name: Rimuove il portachiavi temporaneo
         if: always() && env.HAS_CERT == 'true'
