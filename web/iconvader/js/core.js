@@ -183,6 +183,7 @@
     behavior: 'Comets',               // senza preferenza: il primo della lista
     iconSet: 'Christmas',
     backgroundColor: '#000000',       // ShadingColor (predefinito: nero)
+    language: 'auto',                 // 'auto' = lingua del browser; altrimenti 'en', 'fr', 'it'
   });
 
   const PREF_LIMITS = Object.freeze({
@@ -192,10 +193,8 @@
     scaleFactor: [0.1, 1.0],
   });
 
-  const CHANGE_INTERVALS = Object.freeze([
-    [10, '10 secondi'], [60, '1 minuto'], [300, '5 minuti'], [600, '10 minuti'],
-    [1800, '30 minuti'], [3600, '1 ora'], [0, 'Mai'],
-  ]);
+  /** Voci del menu "Random behavior every" (tag in secondi, come nel nib originale; testi in i18n.js). */
+  const CHANGE_INTERVALS = Object.freeze([[10], [60], [300], [600], [1800], [3600], [0]]);
 
   const STORAGE_KEY = 'iconvader.preferences';
 

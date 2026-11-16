@@ -20,6 +20,7 @@ let outDir = URL(fileURLWithPath: args[2], isDirectory: true)
 try? FileManager.default.createDirectory(at: outDir, withIntermediateDirectories: true)
 
 _ = NSApplication.shared
+NSApp.appearance = NSAppearance(named: .aqua) // screenshot del pannello nell'aspetto chiaro
 guard let bundle = Bundle(url: URL(fileURLWithPath: args[1])) else { fail("bundle non trovato") }
 guard bundle.load() else { fail("il bundle non si carica") }
 guard let viewClass = bundle.principalClass as? ScreenSaverView.Type else { fail("NSPrincipalClass non è una ScreenSaverView") }
@@ -79,7 +80,15 @@ for language in ["en", "fr", "it"] {
         content.layoutSubtreeIfNeeded()
         guard let rep = content.bitmapImageRepForCachingDisplay(in: content.bounds) else { fail("bitmap del pannello non creata") }
         content.cacheDisplay(in: content.bounds, to: rep)
-        try rep.representation(using: .png, properties: [:])?.write(to: outDir.appendingPathComponent("Opzioni-\(language)-\(index + 1).png"))
+        // La vista non disegna lo sfondo della finestra: lo si aggiunge sotto, come lo vedrebbe l'utente.
+        let shot = NSImage(size: content.bounds.size)
+        shot.lockFocus()
+        NSColor.windowBackgroundColor.setFill()
+        content.bounds.fill()
+        rep.draw(in: content.bounds, from: .zero, operation: .sourceOver, fraction: 1, respectFlipped: false, hints: nil)
+        shot.unlockFocus()
+        guard let tiff = shot.tiffRepresentation, let out = NSBitmapImageRep(data: tiff) else { fail("immagine del pannello non creata") }
+        try out.representation(using: .png, properties: [:])?.write(to: outDir.appendingPathComponent("Opzioni-\(language)-\(index + 1).png"))
     }
     print("Pannello opzioni [\(language)]: \(Int(content.frame.width))×\(Int(content.frame.height)) pt, schede: \(labels.joined(separator: ", "))")
 }

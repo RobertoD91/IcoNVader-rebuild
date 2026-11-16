@@ -248,12 +248,18 @@ final class ConfigureSheetController: NSObject {
         credit.alignment = .center
         add(credit, "credit", to: v)
 
-        let rebuild = NSButton(title: L10n.t("credit.rebuild"), target: self, action: #selector(openRepository))
-        rebuild.isBordered = false
-        rebuild.font = .systemFont(ofSize: 10)
-        rebuild.contentTintColor = .linkColor
-        rebuild.frame = NSRect(x: 5, y: 24, width: 400, height: 16)
-        v.addSubview(rebuild)
+        // Aggiunta della ricostruzione (non presente nell'originale): nota e link al repository.
+        let note = NSTextField(labelWithString: L10n.t("credit.rebuild"))
+        note.font = .systemFont(ofSize: 10)
+        note.alignment = .center
+        note.frame = NSRect(x: 5, y: 38, width: 400, height: 13)
+        v.addSubview(note)
+        let link = NSButton(title: "github.com/RobertoD91/IcoNVader-rebuild", target: self, action: #selector(openRepository))
+        link.isBordered = false
+        link.font = .systemFont(ofSize: 10)
+        link.contentTintColor = .linkColor
+        link.frame = NSRect(x: 5, y: 22, width: 400, height: 15)
+        v.addSubview(link)
         return v
     }
 

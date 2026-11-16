@@ -41,7 +41,7 @@
 "message.invalidIconSet" = "No icons could be loaded from the selected icon set.\n\nPlease use the preferences panel to select another one.";
 "message.noSet" = "No set available";
 "credit.original" = "IcoNVader 3.0 © 2004-2006 Daedale, All rights reserved.";
-"credit.rebuild" = "Unofficial rebuild from the original binary — github.com/RobertoD91/IcoNVader-rebuild";
+"credit.rebuild" = "Unofficial rebuild from the original binary:";
 "web.subtitle" = "Web rebuild of the IcoNVader 3.0 screen saver";
 "web.hint" = "{behavior} · P = options · F = full screen";
 "web.options" = "Options (P)";

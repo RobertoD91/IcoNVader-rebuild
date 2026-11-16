@@ -41,7 +41,7 @@
 "message.invalidIconSet" = "Aucune icône n'a pu être chargée à partir de l'ensemble d'icônes sélectionné.\n\nVeuillez ouvrir le panneau de préférences pour en choisir un autre.";
 "message.noSet" = "Aucun ensemble disponible";
 "credit.original" = "IcoNVader 3.0 © 2004-2006 Daedale, Tous droits réservés.";
-"credit.rebuild" = "Reconstruction non officielle à partir du binaire d'origine — github.com/RobertoD91/IcoNVader-rebuild";
+"credit.rebuild" = "Reconstruction non officielle à partir du binaire d'origine :";
 "web.subtitle" = "Reconstruction web de l'économiseur d'écran IcoNVader 3.0";
 "web.hint" = "{behavior} · P = options · F = plein écran";
 "web.options" = "Options (P)";
