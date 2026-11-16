@@ -1,0 +1,68 @@
+{
+  "_nota": "Sorgente unica delle traduzioni. Inglese e francese sono i testi originali di IcoNVader 3.0 (IVPreferences.nib e Localizable.strings). Dopo ogni modifica: python3 tools/genera_traduzioni.py",
+  "lingue": ["en", "fr", "it"],
+  "stringhe": {
+    "tab.appearance":        { "en": "Appearance", "fr": "Apparence", "it": "Aspetto" },
+    "tab.animation":         { "en": "Animation", "fr": "Animation", "it": "Animazione" },
+    "tab.advanced":          { "en": "Advanced", "fr": "Avancé", "it": "Avanzate" },
+
+    "label.icons":           { "en": "Icons:", "fr": "Icônes :", "it": "Icone:" },
+    "label.iconSize":        { "en": "Icons size:", "fr": "Taille des icônes :", "it": "Dimensione icone:" },
+    "end.small":             { "en": "Small", "fr": "Petite", "it": "Piccole" },
+    "end.large":             { "en": "Large", "fr": "Grande", "it": "Grandi" },
+    "label.background":      { "en": "Background color:", "fr": "Couleur d'arrière-plan :", "it": "Colore di sfondo:" },
+
+    "label.invasion":        { "en": "Invasion Level:", "fr": "Niveau d'invasion :", "it": "Livello d'invasione:" },
+    "end.scattered":         { "en": "Scattered Remains", "fr": "Restes épars", "it": "Resti sparsi" },
+    "end.rampant":           { "en": "Rampant", "fr": "Grouillant", "it": "Dilagante" },
+    "label.life":            { "en": "Life expectancy:", "fr": "Espérance de vie :", "it": "Aspettativa di vita:" },
+    "end.bornDead":          { "en": "Born Dead", "fr": "Mort-né", "it": "Nate morte" },
+    "end.ancient":           { "en": "Ancient", "fr": "Ancien", "it": "Antiche" },
+    "label.speed":           { "en": "Speed:", "fr": "Vitesse :", "it": "Velocità:" },
+    "end.slow":              { "en": "Slow", "fr": "Lente", "it": "Lenta" },
+    "end.fast":              { "en": "Fast", "fr": "Rapide", "it": "Veloce" },
+    "label.behavior":        { "en": "Icons Behavior:", "fr": "Comportement des icônes :", "it": "Comportamento delle icone:" },
+    "label.randomEvery":     { "en": "Random behavior every:", "fr": "Comportement aléatoire toutes les :", "it": "Comportamento casuale ogni:" },
+
+    "label.renderer":        { "en": "Render through:", "fr": "Afficher avec :", "it": "Disegna con:" },
+    "label.language":        { "en": "Language:", "fr": "Langue :", "it": "Lingua:" },
+    "language.auto":         { "en": "Automatic", "fr": "Automatique", "it": "Automatica" },
+
+    "button.cancel":         { "en": "Cancel", "fr": "Annuler", "it": "Annulla" },
+    "button.ok":             { "en": "OK", "fr": "OK", "it": "OK" },
+
+    "interval.10":           { "en": "10 seconds", "fr": "10 secondes", "it": "10 secondi" },
+    "interval.60":           { "en": "1 minute", "fr": "1 minute", "it": "1 minuto" },
+    "interval.300":          { "en": "5 minutes", "fr": "5 minutes", "it": "5 minuti" },
+    "interval.600":          { "en": "10 minutes", "fr": "10 minutes", "it": "10 minuti" },
+    "interval.1800":         { "en": "30 minutes", "fr": "30 minutes", "it": "30 minuti" },
+    "interval.3600":         { "en": "1 hour", "fr": "1 heure", "it": "1 ora" },
+    "interval.0":            { "en": "Never", "fr": "Jamais", "it": "Mai" },
+
+    "behavior.Random":       { "en": "Random", "fr": "Aléatoire", "it": "Casuale" },
+    "behavior.Comets":       { "en": "Comets", "fr": "Comètes", "it": "Comete" },
+    "behavior.DNA":          { "en": "DNA", "fr": "ADN", "it": "DNA" },
+    "behavior.Fireworks":    { "en": "Fireworks", "fr": "Feux d'artifice", "it": "Fuochi d'artificio" },
+    "behavior.GameOfLife":   { "en": "Game Of Life", "fr": "Jeu de la Vie", "it": "Gioco della vita" },
+    "behavior.Hypnosis":     { "en": "Hypnosis", "fr": "Hypnose", "it": "Ipnosi" },
+    "behavior.Jumpers":      { "en": "Jumpers", "fr": "Sauteurs", "it": "Saltatori" },
+
+    "message.invalidIconSet": {
+      "en": "No icons could be loaded from the selected icon set.\n\nPlease use the preferences panel to select another one.",
+      "fr": "Aucune icône n'a pu être chargée à partir de l'ensemble d'icônes sélectionné.\n\nVeuillez ouvrir le panneau de préférences pour en choisir un autre.",
+      "it": "Non è stato possibile caricare alcuna icona dal set selezionato.\n\nApri il pannello delle preferenze per sceglierne un altro."
+    },
+    "message.noSet":         { "en": "No set available", "fr": "Aucun ensemble disponible", "it": "Nessun set disponibile" },
+
+    "credit.original":       { "en": "IcoNVader 3.0 © 2004-2006 Daedale, All rights reserved.", "fr": "IcoNVader 3.0 © 2004-2006 Daedale, Tous droits réservés.", "it": "IcoNVader 3.0 © 2004-2006 Daedale, Tutti i diritti riservati." },
+    "credit.rebuild":        { "en": "Unofficial rebuild from the original binary — github.com/RobertoD91/IcoNVader-rebuild", "fr": "Reconstruction non officielle à partir du binaire d'origine — github.com/RobertoD91/IcoNVader-rebuild", "it": "Ricostruzione non ufficiale dal binario originale — github.com/RobertoD91/IcoNVader-rebuild" },
+
+    "web.subtitle":          { "en": "Web rebuild of the IcoNVader 3.0 screen saver", "fr": "Reconstruction web de l'économiseur d'écran IcoNVader 3.0", "it": "Ricostruzione web del salvaschermo IcoNVader 3.0" },
+    "web.hint":              { "en": "{behavior} · P = options · F = full screen", "fr": "{behavior} · P = options · F = plein écran", "it": "{behavior} · P = opzioni · F = schermo intero" },
+    "web.options":           { "en": "Options (P)", "fr": "Options (P)", "it": "Opzioni (P)" },
+    "web.noIcons":           { "en": "no icons loaded", "fr": "aucune icône chargée", "it": "nessuna icona caricata" },
+    "web.canvas":            { "en": "Canvas 2D (browser)", "fr": "Canvas 2D (navigateur)", "it": "Canvas 2D (browser)" },
+    "web.frames":            { "en": "{n} frames", "fr": "{n} images", "it": "{n} fotogrammi" },
+    "web.fps":               { "en": "{n} fps", "fr": "{n} im/s", "it": "{n} fps" }
+  }
+}

@@ -30,6 +30,9 @@ jobs:
           swift --version
           node --version
 
+      - name: Traduzioni aggiornate
+        run: python3 tools/genera_traduzioni.py --verifica
+
       - name: Collaudo del nucleo (Swift = versione web)
         run: macos/Tests/compare.sh 600
 

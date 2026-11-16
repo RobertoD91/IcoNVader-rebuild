@@ -109,7 +109,7 @@ final class IcoNVaderView: ScreenSaverView {
         ctx.fill(bounds)
 
         guard let behavior else {
-            drawMessage("Nessuna icona caricata dal set selezionato.\nScegline un altro nelle opzioni.")
+            drawMessage(L10n.t("message.invalidIconSet"))
             return
         }
         ctx.interpolationQuality = .high

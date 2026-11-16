@@ -65,18 +65,25 @@ for b in behaviors {
     if lit == 0 { fail("\(b.id): fotogramma vuoto") }
 }
 
-guard let preview = viewClass.init(frame: NSRect(x: 0, y: 0, width: 320, height: 200), isPreview: true) else { fail("anteprima non creata") }
-guard preview.hasConfigureSheet, let sheet = preview.configureSheet else { fail("pannello opzioni non disponibile") }
-if let content = sheet.contentView {
-    content.layoutSubtreeIfNeeded()
-    let size = content.fittingSize
-    sheet.setContentSize(size)
-    if let rep = content.bitmapImageRepForCachingDisplay(in: content.bounds) {
-        content.cacheDisplay(in: content.bounds, to: rep)
-        try rep.representation(using: .png, properties: [:])?.write(to: outDir.appendingPathComponent("Opzioni.png"))
+// Pannello opzioni: ogni lingua (ICONVADER_LANG) e ogni scheda, salvati come PNG.
+for language in ["en", "fr", "it"] {
+    setenv("ICONVADER_LANG", language, 1)
+    guard let preview = viewClass.init(frame: NSRect(x: 0, y: 0, width: 320, height: 200), isPreview: true) else { fail("anteprima non creata") }
+    guard preview.hasConfigureSheet, let sheet = preview.configureSheet, let content = sheet.contentView else {
+        fail("pannello opzioni non disponibile")
     }
-    print("Pannello opzioni: \(Int(size.width))×\(Int(size.height)) pt")
+    guard let tabView = content.subviews.compactMap({ $0 as? NSTabView }).first else { fail("schede non trovate") }
+    let labels = tabView.tabViewItems.map(\.label)
+    for index in 0..<tabView.numberOfTabViewItems {
+        tabView.selectTabViewItem(at: index)
+        content.layoutSubtreeIfNeeded()
+        guard let rep = content.bitmapImageRepForCachingDisplay(in: content.bounds) else { fail("bitmap del pannello non creata") }
+        content.cacheDisplay(in: content.bounds, to: rep)
+        try rep.representation(using: .png, properties: [:])?.write(to: outDir.appendingPathComponent("Opzioni-\(language)-\(index + 1).png"))
+    }
+    print("Pannello opzioni [\(language)]: \(Int(content.frame.width))×\(Int(content.frame.height)) pt, schede: \(labels.joined(separator: ", "))")
 }
+unsetenv("ICONVADER_LANG")
 
 defaults.removeObject(forKey: "RandomBehavior")
 defaults.removeObject(forKey: "Behavior")
