@@ -80,3 +80,6 @@ $RECYCLE.BIN/
 ### Progetto ###
 # Output rigenerabile di tools/reversing/disassembla.sh
 build/
+# File generati da XcodeGen (cd macos && xcodegen generate)
+macos/*.xcodeproj/
+macos/Generated/

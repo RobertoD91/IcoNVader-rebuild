@@ -1,0 +1,44 @@
+# Progetto Xcode del salvaschermo IcoNVader (ricostruzione).
+# Generare il progetto con:  cd macos && xcodegen generate
+name: IcoNVader
+options:
+  bundleIdPrefix: io.github.robertod91
+  deploymentTarget:
+    macOS: "11.0"
+  createIntermediateGroups: true
+
+targets:
+  IcoNVader:
+    type: bundle
+    platform: macOS
+    sources:
+      - path: Sources
+      # Le icone originali (.icns) vengono copiate così come sono in Contents/Resources/Icon Sets
+      - path: "../IcoNVader.saver/Contents/Resources/Icon Sets"
+        type: folder
+        buildPhase: resources
+    info:
+      path: Generated/Info.plist
+      properties:
+        CFBundleName: IcoNVader
+        CFBundleDisplayName: IcoNVader
+        CFBundleShortVersionString: "3.0.1"
+        CFBundleVersion: "1"
+        CFBundleDevelopmentRegion: it
+        NSPrincipalClass: IcoNVaderRestoredView
+        NSHumanReadableCopyright: "Ricostruzione didattica di IcoNVader 3.0 (© 2004-2006 Daedale)."
+    settings:
+      base:
+        PRODUCT_NAME: IcoNVader
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.robertod91.IcoNVader
+        WRAPPER_EXTENSION: saver
+        SWIFT_VERSION: "5.0"
+        MACOSX_DEPLOYMENT_TARGET: "11.0"
+        ARCHS: "$(ARCHS_STANDARD)"
+        ONLY_ACTIVE_ARCH: NO
+        CODE_SIGN_STYLE: Manual
+        CODE_SIGN_IDENTITY: "-"
+        DEVELOPMENT_TEAM: ""
+        SKIP_INSTALL: YES
+        ENABLE_HARDENED_RUNTIME: NO
+        GENERATE_INFOPLIST_FILE: NO

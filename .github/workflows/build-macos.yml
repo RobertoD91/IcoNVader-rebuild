@@ -1,0 +1,94 @@
+# Compila il salvaschermo IcoNVader per macOS (universale arm64 + x86_64).
+# Avvio manuale: Actions → "Compila salvaschermo macOS" → Run workflow.
+name: Compila salvaschermo macOS
+
+on:
+  workflow_dispatch:
+    inputs:
+      release:
+        description: "Pubblica anche una release GitHub con lo zip"
+        type: boolean
+        default: false
+      tag:
+        description: "Tag della release (es. v3.0.1); usato solo se release è attivo"
+        type: string
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Versioni degli strumenti
+        run: |
+          sw_vers
+          xcodebuild -version
+          swift --version
+          node --version
+
+      - name: Collaudo del nucleo (Swift = versione web)
+        run: macos/Tests/compare.sh 600
+
+      - name: Genera il progetto Xcode
+        run: |
+          brew install xcodegen
+          cd macos && xcodegen generate
+
+      - name: Compila
+        run: |
+          mkdir -p build
+          xcodebuild \
+            -project macos/IcoNVader.xcodeproj \
+            -target IcoNVader \
+            -configuration Release \
+            SYMROOT="$PWD/build" \
+            ARCHS="arm64 x86_64" ONLY_ACTIVE_ARCH=NO \
+            CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual \
+            build > build/xcodebuild.log 2>&1 || { tail -100 build/xcodebuild.log; exit 1; }
+          grep -E "(warning|error):" build/xcodebuild.log | sort -u || true
+          tail -3 build/xcodebuild.log
+
+      - name: Verifica il bundle
+        run: |
+          SAVER=build/Release/IcoNVader.saver
+          ls -R "$SAVER" | head -40
+          lipo -info "$SAVER/Contents/MacOS/IcoNVader"
+          plutil -p "$SAVER/Contents/Info.plist"
+          codesign --verify --deep --verbose=2 "$SAVER"
+          ls "$SAVER/Contents/Resources/Icon Sets/Christmas" "$SAVER/Contents/Resources/Icon Sets/Daedale"
+
+      - name: Collaudo del bundle (caricamento, animazione, screenshot)
+        run: |
+          swiftc -o build/render macos/Tests/render.swift
+          build/render build/Release/IcoNVader.saver build/screenshot
+
+      - name: Prepara lo zip
+        run: |
+          cd build/Release
+          ditto -c -k --sequesterRsrc --keepParent IcoNVader.saver ../IcoNVader-saver.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: IcoNVader-saver
+          path: build/IcoNVader-saver.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: screenshot
+          path: build/screenshot
+
+      - name: Pubblica la release
+        if: ${{ inputs.release }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          TAG="${TAG:-v3.0.1-build${GITHUB_RUN_NUMBER}}"
+          gh release create "$TAG" build/IcoNVader-saver.zip \
+            --target "$GITHUB_SHA" \
+            --title "IcoNVader per macOS ($TAG)" \
+            --notes "Salvaschermo IcoNVader ricostruito, universale (Apple Silicon + Intel), macOS 11 o successivo. Firma ad-hoc: vedi il README per l'installazione."
