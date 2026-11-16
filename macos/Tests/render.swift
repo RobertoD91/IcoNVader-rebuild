@@ -28,15 +28,18 @@ guard let moduleName = bundle.bundleIdentifier,
 print("Bundle caricato: \(moduleName), classe \(NSStringFromClass(viewClass))")
 
 let frame = NSRect(x: 0, y: 0, width: 1280, height: 800)
-let behaviors: [(id: String, frames: Int, icons: String)] = [
-    ("Comets", 150, "Christmas"), ("Fireworks", 400, "Daedale"), ("GameOfLife", 150, "Christmas"),
-    ("Hypnosis", 150, "Daedale"), ("DNA", 150, "Christmas"), ("Jumpers", 150, "Daedale"),
+// Fireworks usa la densità massima: con quella predefinita (50) parte un razzo ogni ~51 fotogrammi
+// e in un istante qualsiasi lo schermo può essere vuoto, facendo fallire il controllo.
+let behaviors: [(id: String, frames: Int, icons: String, density: Int)] = [
+    ("Comets", 150, "Christmas", 50), ("Fireworks", 150, "Daedale", 100), ("GameOfLife", 150, "Christmas", 50),
+    ("Hypnosis", 150, "Daedale", 50), ("DNA", 150, "Christmas", 50), ("Jumpers", 150, "Daedale", 50),
 ]
 
 for b in behaviors {
     defaults.set(false, forKey: "RandomBehavior")
     defaults.set(b.id, forKey: "Behavior")
     defaults.set(b.icons, forKey: "IconSetName")
+    defaults.set(b.density, forKey: "Density")
     defaults.synchronize()
 
     guard let view = viewClass.init(frame: frame, isPreview: false) else { fail("init(frame:isPreview:) ha restituito nil") }
@@ -78,5 +81,6 @@ if let content = sheet.contentView {
 defaults.removeObject(forKey: "RandomBehavior")
 defaults.removeObject(forKey: "Behavior")
 defaults.removeObject(forKey: "IconSetName")
+defaults.removeObject(forKey: "Density")
 defaults.synchronize()
 print("Collaudo completato.")

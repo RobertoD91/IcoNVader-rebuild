@@ -12,19 +12,35 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Il repository contiene due cose:
 
 1. **Archivio** di salvaschermi macOS di terze parti già compilati (bundle `.saver`), conservati così come sono stati distribuiti e senza sorgenti. Non vanno modificati.
-2. **Restauro di IcoNVader** (esperimento didattico di reverse engineering): il comportamento del binario è stato ricostruito e reimplementato come pagina web.
+2. **Restauro di IcoNVader** (esperimento didattico di reverse engineering): il comportamento del binario è stato ricostruito e reimplementato due volte.
    - `docs/iconvader/README.md`: architettura dell'originale, preferenze, metodo, differenze e stranezze mantenute. `docs/iconvader/comportamenti/*.md` contiene lo pseudocodice dettagliato di ogni comportamento (in inglese).
-   - `web/iconvader/`: ricostruzione in JavaScript puro (Canvas 2D, script classici, nessuna dipendenza).
+   - `web/iconvader/`: ricostruzione in JavaScript puro (Canvas 2D, script classici, nessuna dipendenza), pubblicata su GitHub Pages (https://robertodisanto.it/salvaschermi-macos/).
+   - `macos/`: salvaschermo per macOS 11+ in Swift, universale arm64 + x86_64. `Sources/Core` è il porting dei comportamenti (solo Foundation), `Sources/Saver` la vista `ScreenSaverView`, il disegno e il pannello opzioni (AppKit). Il progetto Xcode si genera con XcodeGen da `project.yml` e non è versionato.
    - `tools/`: script per rigenerare il disassemblato annotato e le icone PNG.
 
-Non esistono sistemi di build, lint o test automatici.
+Il `README.md` alla radice è la presentazione per gli utenti (download, installazione, uso).
 
 ## Comandi
 
 ```bash
 tools/reversing/disassembla.sh        # disassemblato annotato della slice i386 in build/reversing/ (richiede llvm-objdump)
 python3 tools/converti_icone.py       # rigenera web/iconvader/icons/*/*.png dai .icns (richiede Pillow)
+macos/Tests/compare.sh [fotogrammi]   # confronta nucleo Swift e versione web con seme fisso (richiede swiftc e node)
+cd macos && xcodegen generate         # genera IcoNVader.xcodeproj (solo macOS)
 ```
+
+Per un singolo caso: `swiftc -o /tmp/t macos/Sources/Core/*.swift macos/Tests/main.swift && /tmp/t DNA 600 1` e `node macos/Tests/reference.js DNA 600 1` devono stampare righe identiche.
+
+## Doppia implementazione: regola fondamentale
+
+La versione web (`web/iconvader/js/behaviors/*.js`) e il nucleo Swift (`macos/Sources/Core/*.swift`) sono traduzioni riga per riga l'una dell'altra e **devono restare identiche**: stesso ordine delle chiamate a `random()`, stesse formule, stessi arrotondamenti (`Math.fround` ↔ `Float`). Ogni modifica a un comportamento va fatta in entrambi i linguaggi e verificata con `macos/Tests/compare.sh`, che fallisce alla prima differenza.
+
+Nell'ambiente cloud non c'è Swift preinstallato: la toolchain per Linux si scarica da download.swift.org (Ubuntu 24.04) per compilare il nucleo; la parte AppKit si compila solo su macOS.
+
+## GitHub Actions
+
+- `build-macos.yml` (avvio **manuale**): `compare.sh`, XcodeGen, `xcodebuild` universale con firma ad-hoc, verifica del bundle e `macos/Tests/render.swift`, che carica il `.saver` come fa il sistema, anima ogni comportamento e salva gli screenshot (artefatto `screenshot`). Produce l'artefatto `IcoNVader-saver` e, se richiesto, una release.
+- `pages.yml`: pubblica `web/iconvader` su Pages a ogni push su `main` che tocca `web/`, oppure a mano.
 
 La pagina web si apre direttamente da file (`web/iconvader/index.html`); parametri utili per provare un singolo comportamento: `?behavior=DNA&icons=Daedale`. Nell'ambiente cloud la verifica visiva si fa con Playwright (già installato) caricando l'URL `file://`.
 

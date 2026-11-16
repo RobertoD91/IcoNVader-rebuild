@@ -170,3 +170,22 @@ quelle di Cocoa; solo il renderer le converte per il canvas.
   dell'elica stessa.
 - **Game Of Life**: dopo ogni passo viene ordinata la lista delle nascite o delle morti, non quella
   disegnata.
+
+## 5. Il salvaschermo per macOS moderni
+
+`macos/` contiene una seconda reimplementazione, in Swift, installabile come salvaschermo su
+macOS 11 o successivo (Apple Silicon e Intel). È divisa in due parti:
+
+- `Sources/Core/`: i sei comportamenti tradotti riga per riga dalla versione web, usando solo
+  Foundation. Si compila anche su Linux.
+- `Sources/Saver/`: la vista `ScreenSaverView` (classe `IcoNVaderRestoredView`), il disegno con
+  Core Graphics (la stessa trasformazione di `QuartzRenderer`), le preferenze con `ScreenSaverDefaults`
+  e il pannello opzioni costruito da codice. Come l'originale, cerca i set di icone anche in
+  `/Library/Application Support/IcoNVader/Icon Sets/` e `~/Library/Application Support/IcoNVader/Icon Sets/`.
+
+Le icone sono i file `.icns` originali, copiati nel bundle senza conversioni.
+
+**Verifica di equivalenza.** `macos/Tests/compare.sh` esegue ogni comportamento sia in Swift sia in
+JavaScript (Node) con lo stesso generatore casuale con seme (mulberry32) e confronta lo stato di
+tutti gli attori dopo 600 fotogrammi: posizione, angolo, scala, opacità e icona devono coincidere
+fino alla sesta cifra decimale. Il controllo copre 2 risoluzioni e 3 semi per comportamento.
