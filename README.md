@@ -6,10 +6,13 @@ solo binario compilato.
 | Salvaschermo | Autore | Versione | Funziona sui Mac di oggi? |
 |---|---|---|---|
 | `IcoNVader.saver` | Daedale (2004-2006) | 3.0 | No: solo PowerPC e Intel a 32 bit. **Restaurato**, vedi sotto |
-| `LotsaSnow.saver` | Dag Ågren | 1.6 | Solo Intel (x86_64) |
-| `LotsaWater.saver` | Dag Ågren | 1.8 | Solo Intel (x86_64) |
+| [`LotsaSnow.saver`](https://wakaba.c3.cx/s/lotsablankers/lotsasnow.html) | Dag Ågren | 1.6 | Solo Intel (x86_64) |
+| [`LotsaWater.saver`](https://wakaba.c3.cx/s/lotsablankers/lotsawater.html) | Dag Ågren | 1.8 | Solo Intel (x86_64) |
 
 I bundle originali sono conservati così come sono stati distribuiti e non vengono modificati.
+LotsaSnow e LotsaWater hanno ancora una pagina ufficiale sul sito dell'autore:
+[LotsaSnow](https://wakaba.c3.cx/s/lotsablankers/lotsasnow.html) e
+[LotsaWater](https://wakaba.c3.cx/s/lotsablankers/lotsawater.html).
 
 ## IcoNVader restaurato
 
@@ -119,4 +122,5 @@ macos/Tests/compare.sh             # confronto tra Swift e JavaScript (servono s
 
 IcoNVader 3.0 è © 2004-2006 Daedale. Questo è un progetto didattico di conservazione di un software
 non più distribuito né mantenuto; le icone incluse sono quelle del pacchetto originale.
-LotsaSnow e LotsaWater sono © Dag Ågren.
+LotsaSnow e LotsaWater sono © Dag Ågren ([pagina di LotsaSnow](https://wakaba.c3.cx/s/lotsablankers/lotsasnow.html),
+[pagina di LotsaWater](https://wakaba.c3.cx/s/lotsablankers/lotsawater.html)).
