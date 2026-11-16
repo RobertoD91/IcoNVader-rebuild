@@ -1,0 +1,26 @@
+/* Comets Behavior Name */
+"Comets" = "Comètes";
+
+/* DNA Behavior Name */
+"DNA" = "ADN";
+
+/* Fireworks Behavior Name */
+"Fireworks" = "Feux d'artifice";
+
+/* Game Of Life Behavior Name */
+"Game Of Life" = "Jeu de la Vie";
+
+/* Hypnosis Behavior Name */
+"Hypnosis" = "Hypnose";
+
+/* Invalid icon set message */
+"InvalidIconSetMessage" = "Aucune icône n'a pu être chargée à partir de l'ensemble d'icônes sélectionné.\n\nVeuillez ouvrir le panneau de préférences pour en choisir un autre.";
+
+/* Jumpers Behavior Name */
+"Jumpers" = "Sauteurs";
+
+/* No set available message */
+"NoSetAvailableMessage" = "Aucun ensemble disponible";
+
+/* Random */
+"Random" = "Aléatoire";

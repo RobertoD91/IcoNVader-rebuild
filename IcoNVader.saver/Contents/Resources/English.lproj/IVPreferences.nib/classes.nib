@@ -1,0 +1,32 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = IVLinkTextField; LANGUAGE = ObjC; SUPERCLASS = NSTextField; }, 
+        {
+            ACTIONS = {
+                behaviorChange = id; 
+                cancel = id; 
+                iconSetChange = id; 
+                rendererChange = id; 
+                save = id; 
+            }; 
+            CLASS = IVPreferencesController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                oAnimationSpeed = NSSlider; 
+                oBehaviorMenu = NSPopUpButton; 
+                oDensity = NSSlider; 
+                oIconMenu = NSPopUpButton; 
+                oIconTable = NSTableView; 
+                oLifeExpectancy = NSSlider; 
+                oRandomBehaviorChangeInterval = NSPopUpButton; 
+                oRendererLogo = NSImageView; 
+                oRendererMenu = NSPopUpButton; 
+                oScaleFactor = NSSlider; 
+                oShadingColor = NSColorWell; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

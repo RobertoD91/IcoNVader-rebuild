@@ -1,0 +1,26 @@
+/* Comets Behavior Name */
+"Comets" = "Comets";
+
+/* DNA Behavior Name */
+"DNA" = "DNA";
+
+/* Fireworks Behavior Name */
+"Fireworks" = "Fireworks";
+
+/* Game Of Life Behavior Name */
+"Game Of Life" = "Game Of Life";
+
+/* Hypnosis Behavior Name */
+"Hypnosis" = "Hypnosis";
+
+/* Invalid icon set message */
+"InvalidIconSetMessage" = "No icons could be loaded from the selected icon set.\n\nPlease use the preferences panel to select another one.";
+
+/* Jumpers Behavior Name */
+"Jumpers" = "Jumpers";
+
+/* No set available message */
+"NoSetAvailableMessage" = "No set available";
+
+/* Random */
+"Random" = "Random";
