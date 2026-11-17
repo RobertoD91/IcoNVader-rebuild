@@ -2,57 +2,132 @@
 
 Un salvaschermo scaricato da Internet viene bloccato da Gatekeeper se non è **firmato con un
 certificato Developer ID** e **notarizzato** da Apple. Il workflow **Compila salvaschermo macOS**
-fa entrambe le cose, e anche lo *staple* (il ticket di notarizzazione viene allegato al bundle), se
-nel repository ci sono i secret descritti qui sotto. Senza secret il bundle resta con la firma
-ad-hoc e va sbloccato a mano (vedi il README).
+fa entrambe le cose, e anche lo *staple* (allega al bundle il ticket di notarizzazione), se nel
+repository ci sono i secret descritti qui sotto. Senza secret il bundle resta con la firma ad-hoc e
+va sbloccato a mano (vedi il README).
 
-Serve un account Apple Developer a pagamento. Il certificato Developer ID lo può creare solo il
-titolare dell'account (*Account Holder*).
+## Come funziona, in breve
 
-## 1. Certificato "Developer ID Application"
+- **Il certificato** è la coppia formata da una **chiave privata**, che resta a chi firma, e da un
+  certificato che Apple rilascia per quella chiave. Chi ha la chiave privata può firmare a nome del
+  tuo team: è l'unica parte davvero da proteggere.
+- **Tipi diversi per usi diversi.** *Apple Development* serve per sviluppare, *Apple Distribution*
+  per App Store e TestFlight, *Developer ID Application* per distribuire fuori dall'App Store, come
+  qui. Il certificato Developer ID non tocca le app su TestFlight.
+- **Più certificati dello stesso tipo.** Un team può avere più certificati Developer ID Application
+  attivi, ognuno con la sua chiave (Apple ne permette pochi, in genere fino a 5). Conviene crearne
+  uno **solo per GitHub**, con una chiave che non passa mai dal Portachiavi né da Xcode. Se un
+  giorno fosse compromesso, si revoca solo quello: i certificati del portatile e le app su
+  TestFlight restano intatti. Revocarlo può però invalidare quello che è stato firmato con lui,
+  cioè le release di questo progetto.
+- **La notarizzazione** usa una chiave API di App Store Connect, separata dal certificato.
+  Anche questa va creata apposta per GitHub, in modo da poterla revocare da sola.
+- **Cosa resta in comune:** il team. Tutte le firme mostrano lo stesso nome
+  *Developer ID Application: Nome (TEAMID)*; per separare anche quello servirebbe un secondo
+  account sviluppatore.
 
-1. In Xcode: **Settings → Accounts**, seleziona il tuo Apple ID e il team, poi **Manage
-   Certificates… → + → Developer ID Application**. In alternativa si crea da
-   [developer.apple.com → Certificates](https://developer.apple.com/account/resources/certificates/list).
-2. Apri **Accesso Portachiavi**, categoria **I miei certificati**, trova
-   *Developer ID Application: Nome (TEAMID)*, aprilo con la freccia per vedere che c'è la chiave
-   privata, selezionali entrambi e scegli **Esporta 2 elementi…** in formato `.p12`, con una password.
-3. Converti il file in base64 e copialo negli appunti:
+## 1. Certificato dedicato a GitHub (senza Portachiavi né Xcode)
+
+Si lavora in una cartella temporanea, con `openssl` (già presente su macOS).
 
 ```bash
-base64 -i Certificati.p12 | pbcopy
+mkdir -p ~/iconvader-firma && cd ~/iconvader-firma
 ```
 
-## 2. Chiave API di App Store Connect (per la notarizzazione)
-
-1. In [App Store Connect](https://appstoreconnect.apple.com/) vai su **Utenti e accessi →
-   Integrazioni → App Store Connect API → Chiavi del team** e genera una chiave con ruolo
-   **Developer**.
-2. Annota l'**ID chiave** e l'**ID emittente** (Issuer ID) mostrati nella pagina.
-3. Scarica `AuthKey_XXXXXXXXXX.p8` (si può scaricare una sola volta) e convertilo in base64:
+Genera la chiave privata e la richiesta di certificato (CSR):
 
 ```bash
-base64 -i AuthKey_XXXXXXXXXX.p8 | pbcopy
+openssl req -new -newkey rsa:2048 -nodes -keyout developer-id.key -out developer-id.csr -subj "/CN=IcoNVader GitHub/C=IT"
 ```
+
+Su [developer.apple.com → Certificates](https://developer.apple.com/account/resources/certificates/list)
+premi **+**, scegli **Developer ID Application** (G2 Sub-CA), carica `developer-id.csr` e scarica il
+certificato (`developerID_application.cer`) nella stessa cartella. Serve il ruolo di titolare
+dell'account (*Account Holder*).
+
+Unisci chiave e certificato in un `.p12` con una password casuale:
+
+```bash
+openssl x509 -inform DER -in developerID_application.cer -out developer-id.pem
+```
+
+```bash
+openssl rand -hex 24 > p12-password.txt
+```
+
+```bash
+openssl pkcs12 -export -inkey developer-id.key -in developer-id.pem -name "IcoNVader GitHub" -keypbe PBE-SHA1-3DES -certpbe PBE-SHA1-3DES -macalg sha1 -passout file:p12-password.txt -out developer-id.p12
+```
+
+(La cifratura 3DES/SHA1 è quella che `security import` legge senza problemi sui runner macOS.)
+
+## 2. Chiave API dedicata per la notarizzazione
+
+In [App Store Connect](https://appstoreconnect.apple.com/) → **Utenti e accessi → Integrazioni →
+App Store Connect API → Chiavi del team**, genera una chiave chiamata per esempio
+*IcoNVader GitHub* con ruolo **Developer**, il minimo che consente la notarizzazione. Annota
+l'**ID chiave** e l'**ID emittente** e scarica `AuthKey_XXXXXXXXXX.p8` nella cartella di prima
+(si scarica una sola volta).
+
+Una chiave del team con ruolo Developer vede anche le app del team in App Store Connect. Per
+limitarla ancora di più si può invitare un utente dedicato con ruolo Developer, con accesso
+ristretto ad app specifiche, e usare una sua chiave individuale.
 
 ## 3. Secret su GitHub
 
-Nel repository: **Settings → Secrets and variables → Actions → New repository secret**.
+Con [GitHub CLI](https://cli.github.com/) (`brew install gh && gh auth login`), dalla cartella di
+prima:
+
+```bash
+base64 -i developer-id.p12 | gh secret set MACOS_CERTIFICATE_P12 -R RobertoD91/IcoNVader-rebuild
+```
+
+```bash
+gh secret set MACOS_CERTIFICATE_PASSWORD -R RobertoD91/IcoNVader-rebuild --body "$(cat p12-password.txt)"
+```
+
+```bash
+base64 -i AuthKey_XXXXXXXXXX.p8 | gh secret set NOTARY_API_KEY -R RobertoD91/IcoNVader-rebuild
+```
+
+```bash
+gh secret set NOTARY_API_KEY_ID -R RobertoD91/IcoNVader-rebuild --body "XXXXXXXXXX"
+```
+
+```bash
+gh secret set NOTARY_API_ISSUER_ID -R RobertoD91/IcoNVader-rebuild --body "ID-EMITTENTE"
+```
+
+In alternativa: **Settings → Secrets and variables → Actions → New repository secret**.
 
 | Secret | Contenuto |
 |---|---|
-| `MACOS_CERTIFICATE_P12` | il `.p12` in base64 (passo 1) |
-| `MACOS_CERTIFICATE_PASSWORD` | la password scelta all'esportazione del `.p12` |
-| `NOTARY_API_KEY` | il file `.p8` in base64 (passo 2) |
+| `MACOS_CERTIFICATE_P12` | `developer-id.p12` in base64 |
+| `MACOS_CERTIFICATE_PASSWORD` | la password in `p12-password.txt` |
+| `NOTARY_API_KEY` | il file `.p8` in base64 |
 | `NOTARY_API_KEY_ID` | l'ID chiave |
 | `NOTARY_API_ISSUER_ID` | l'ID emittente |
 
-Con i primi due il bundle viene firmato; con tutti e cinque viene anche notarizzato. Le note della
-release indicano quale dei tre casi si è verificato.
+Poi cancella la cartella, oppure conservala su un supporto cifrato se vuoi poter ricreare i secret
+senza generare un nuovo certificato:
+
+```bash
+rm -rf ~/iconvader-firma
+```
+
+Con i primi due secret il bundle viene firmato; con tutti e cinque viene anche notarizzato. Le
+note della release indicano quale dei tre casi si è verificato.
+
+## Chi può usare i secret
+
+Il repository è pubblico, ma i secret non sono esposti: il workflow di compilazione parte solo a
+mano (**Run workflow**), cosa che può fare solo chi ha accesso in scrittura al repository, e GitHub
+non passa i secret ai workflow avviati da pull request di altri. Nei log i valori vengono mascherati.
 
 ## Cosa fa il workflow
 
-1. Crea un portachiavi temporaneo, importa il `.p12` e cerca l'identità *Developer ID Application*.
+1. Crea un portachiavi temporaneo sul runner, importa il `.p12` e cerca l'identità
+   *Developer ID Application*.
 2. Firma il bundle con `codesign --timestamp --options runtime` (*hardened runtime*, richiesto
    per la notarizzazione).
 3. Invia lo zip al servizio di notarizzazione con `xcrun notarytool submit --wait`; se viene
@@ -60,5 +135,9 @@ release indicano quale dei tre casi si è verificato.
 4. Allega il ticket con `xcrun stapler staple`, così il controllo funziona anche senza connessione.
 5. Esegue il collaudo sul bundle firmato e alla fine cancella il portachiavi temporaneo.
 
-I secret non finiscono mai nei log e i file temporanei (`.p12`, `.p8`) vengono cancellati subito
-dopo l'uso.
+## Se qualcosa va storto
+
+- **Certificato compromesso:** revocalo da developer.apple.com → Certificates, creane un altro con
+  il passo 1 e aggiorna i due secret `MACOS_CERTIFICATE_*`.
+- **Chiave API compromessa:** revocala da App Store Connect → Integrazioni, generane un'altra e
+  aggiorna i tre secret `NOTARY_API_*`.
