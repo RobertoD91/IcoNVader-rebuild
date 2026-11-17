@@ -55,7 +55,7 @@
     "message.noSet":         { "en": "No set available", "fr": "Aucun ensemble disponible", "it": "Nessun set disponibile" },
 
     "credit.original":       { "en": "IcoNVader 3.0 © 2004-2006 Daedale, All rights reserved.", "fr": "IcoNVader 3.0 © 2004-2006 Daedale, Tous droits réservés.", "it": "IcoNVader 3.0 © 2004-2006 Daedale, Tutti i diritti riservati." },
-    "credit.rebuild":        { "en": "Unofficial rebuild from the original binary:", "fr": "Reconstruction non officielle à partir du binaire d'origine :", "it": "Ricostruzione non ufficiale a partire dal binario originale:" },
+    "credit.rebuild":        { "en": "Unofficial rebuild {version} from the original binary:", "fr": "Reconstruction non officielle {version} à partir du binaire d'origine :", "it": "Ricostruzione non ufficiale {version} a partire dal binario originale:" },
 
     "web.subtitle":          { "en": "Web rebuild of the IcoNVader 3.0 screen saver", "fr": "Reconstruction web de l'économiseur d'écran IcoNVader 3.0", "it": "Ricostruzione web del salvaschermo IcoNVader 3.0" },
     "web.hint":              { "en": "{behavior} · P = options · F = full screen", "fr": "{behavior} · P = options · F = plein écran", "it": "{behavior} · P = opzioni · F = schermo intero" },

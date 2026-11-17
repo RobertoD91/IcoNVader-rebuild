@@ -34,7 +34,8 @@ Per un singolo caso: `swiftc -o /tmp/t macos/Sources/Core/*.swift macos/Tests/ma
 ## Traduzioni e pannello opzioni
 
 - Tutti i testi dell'interfaccia stanno in `i18n/stringhe.json` (inglese e francese sono quelli originali del bundle, più l'italiano). `python3 tools/genera_traduzioni.py` genera `macos/Resources/<lingua>.lproj/Localizable.strings` e `web/iconvader/js/i18n.js`: non modificare a mano i file generati. Il workflow macOS fallisce se non sono aggiornati (`--verifica`).
-- Il pannello macOS (`ConfigureSheet.swift`) replica `IVPreferences.nib`: le coordinate dei controlli vengono dai nib `English.lproj` e `French.lproj` (decodificati con il pacchetto Python `pytypedstream`: `python -m typedstream decode objects.nib`); l'italiano usa la disposizione francese. La lingua segue il sistema; per i collaudi si forza con la variabile d'ambiente `ICONVADER_LANG`.
+- **Versione:** l'unica fonte è `CFBundleShortVersionString` in `macos/project.yml`. Il generatore la copia in `i18n.js` (`window.IcoNVaderVersion`), quindi dopo averla cambiata va rilanciato `tools/genera_traduzioni.py`. I testi possono contenere `{version}`, sostituito a runtime sia su macOS sia sul web.
+- Il pannello macOS (`ConfigureSheet.swift`) replica `IVPreferences.nib`: le coordinate dei controlli vengono dai nib `English.lproj` e `French.lproj` (decodificati con il pacchetto Python `pytypedstream`: `python -m typedstream decode objects.nib`); l'italiano usa la disposizione francese. Le etichette agli estremi degli slider sono ancorate allo slider (metà larghezza ciascuna) per non uscire dalla scheda con i testi tradotti. La lingua segue il sistema; per i collaudi si forza con la variabile d'ambiente `ICONVADER_LANG`.
 - Sul web la lingua è nelle preferenze (`language`: `auto`, `en`, `fr`, `it`) e si può passare con `?lang=`.
 
 ## Doppia implementazione: regola fondamentale

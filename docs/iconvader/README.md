@@ -216,6 +216,10 @@ usa quelle francesi. I testi originali delle due lingue, presi dai nib e da `Loc
 sono raccolti con la traduzione italiana in `i18n/stringhe.json`, da cui
 `tools/genera_traduzioni.py` genera i file per macOS e per il web.
 
+Le etichette agli estremi degli slider mantengono l'altezza del nib, ma in orizzontale sono
+ancorate allo slider (metà della sua larghezza ciascuna): con le coordinate originali i testi
+italiani più lunghi uscivano dalla scheda.
+
 Differenze rispetto all'originale: la riga di copyright di Daedale non è più un link, e sotto c'è
 un link al repository della ricostruzione; sul web il pannello si adatta agli
 schermi stretti e la scheda Avanzate permette di scegliere la lingua.

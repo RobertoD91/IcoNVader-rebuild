@@ -41,7 +41,7 @@
 "message.invalidIconSet" = "Impossibile caricare le icone del set selezionato.\n\nScegline un altro nelle opzioni del salvaschermo.";
 "message.noSet" = "Nessun set disponibile";
 "credit.original" = "IcoNVader 3.0 © 2004-2006 Daedale, Tutti i diritti riservati.";
-"credit.rebuild" = "Ricostruzione non ufficiale a partire dal binario originale:";
+"credit.rebuild" = "Ricostruzione non ufficiale {version} a partire dal binario originale:";
 "web.subtitle" = "Ricostruzione web del salvaschermo IcoNVader 3.0";
 "web.hint" = "{behavior} · P = opzioni · F = schermo intero";
 "web.options" = "Opzioni (P)";

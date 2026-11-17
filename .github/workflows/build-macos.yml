@@ -238,7 +238,7 @@ jobs:
           case "$SIGNING_STATE" in
             notarized) SIGNING="Signed with a Developer ID and notarized by Apple: install it with a double-click." ;;
             signed)    SIGNING="Signed with a Developer ID but not notarized: the first time, allow it in System Settings → Privacy & Security." ;;
-            *)         SIGNING="Ad-hoc signed and not notarized: remove the quarantine flag before installing (see the README)." ;;
+            *)         SIGNING="Ad-hoc signed and not notarized: before installing, run \`xattr -dr com.apple.quarantine IcoNVader.saver\`." ;;
           esac
           # Note in inglese: novità passate dall'input "notes" + parte fissa
           {

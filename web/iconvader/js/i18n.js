@@ -1,4 +1,5 @@
 /* Generato da tools/genera_traduzioni.py a partire da i18n/stringhe.json: non modificare a mano. */
+window.IcoNVaderVersion = "3.0.4";
 window.IcoNVaderStrings = {
   "en": {
     "tab.appearance": "Appearance",
@@ -42,7 +43,7 @@ window.IcoNVaderStrings = {
     "message.invalidIconSet": "No icons could be loaded from the selected icon set.\n\nPlease use the preferences panel to select another one.",
     "message.noSet": "No set available",
     "credit.original": "IcoNVader 3.0 © 2004-2006 Daedale, All rights reserved.",
-    "credit.rebuild": "Unofficial rebuild from the original binary:",
+    "credit.rebuild": "Unofficial rebuild {version} from the original binary:",
     "web.subtitle": "Web rebuild of the IcoNVader 3.0 screen saver",
     "web.hint": "{behavior} · P = options · F = full screen",
     "web.options": "Options (P)",
@@ -93,7 +94,7 @@ window.IcoNVaderStrings = {
     "message.invalidIconSet": "Aucune icône n'a pu être chargée à partir de l'ensemble d'icônes sélectionné.\n\nVeuillez ouvrir le panneau de préférences pour en choisir un autre.",
     "message.noSet": "Aucun ensemble disponible",
     "credit.original": "IcoNVader 3.0 © 2004-2006 Daedale, Tous droits réservés.",
-    "credit.rebuild": "Reconstruction non officielle à partir du binaire d'origine :",
+    "credit.rebuild": "Reconstruction non officielle {version} à partir du binaire d'origine :",
     "web.subtitle": "Reconstruction web de l'économiseur d'écran IcoNVader 3.0",
     "web.hint": "{behavior} · P = options · F = plein écran",
     "web.options": "Options (P)",
@@ -144,7 +145,7 @@ window.IcoNVaderStrings = {
     "message.invalidIconSet": "Impossibile caricare le icone del set selezionato.\n\nScegline un altro nelle opzioni del salvaschermo.",
     "message.noSet": "Nessun set disponibile",
     "credit.original": "IcoNVader 3.0 © 2004-2006 Daedale, Tutti i diritti riservati.",
-    "credit.rebuild": "Ricostruzione non ufficiale a partire dal binario originale:",
+    "credit.rebuild": "Ricostruzione non ufficiale {version} a partire dal binario originale:",
     "web.subtitle": "Ricostruzione web del salvaschermo IcoNVader 3.0",
     "web.hint": "{behavior} · P = opzioni · F = schermo intero",
     "web.options": "Opzioni (P)",

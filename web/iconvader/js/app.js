@@ -37,7 +37,8 @@
   function applyLanguage(choice) {
     lang = resolveLanguage(choice);
     document.documentElement.lang = lang;
-    for (const el of document.querySelectorAll('[data-i18n]')) el.textContent = t(el.dataset.i18n);
+    const vars = { version: window.IcoNVaderVersion || '' };
+    for (const el of document.querySelectorAll('[data-i18n]')) el.textContent = t(el.dataset.i18n, vars);
     toggle.title = t('web.options');
     toggle.setAttribute('aria-label', t('web.options'));
     populateMenus();

@@ -28,142 +28,54 @@ first as a web page and then as a screen saver for today's Macs. The goal was to
 exactly as I remembered it, with the same formulas, the same timing and even the small quirks of
 the original.
 
-## The project
+## Install on macOS
 
-IcoNVader fills the screen with animated icons in six different ways: **Comets**, **Fireworks**,
-**Game Of Life**, **Hypnosis**, **DNA** and **Jumpers**. The original no longer loads on macOS 10.15
-(Catalina) or later, because it only contains 32-bit code.
+1. Download `IcoNVader-saver.zip` from the [latest release](https://github.com/RobertoD91/IcoNVader-rebuild/releases/latest).
+2. Unzip it and double-click `IcoNVader.saver`.
+3. Choose it in **System Settings → Screen Saver**. The **Options** button opens the settings panel.
 
-Its behavior was recovered by reading the disassembled binary (constants, formulas, edge cases and
-even the original's small bugs) and was rewritten twice:
+It runs on macOS 11 or later, on Apple Silicon and Intel, and is signed and notarized by Apple.
+When updating from a previous version, quit System Settings and run `killall legacyScreenSaver`,
+otherwise macOS keeps the old one loaded.
 
-- a **web version** (`web/iconvader/`), in JavaScript with Canvas 2D;
-- a **screen saver for modern macOS** (`macos/`), in Swift, universal for Apple Silicon and Intel,
-  macOS 11 or later.
+**Your own icons:** like the original, put a folder of `.icns` or `.png` files in
+`~/Library/Application Support/IcoNVader/Icon Sets/` and it shows up in the **Icons** menu.
 
-The two versions produce **exactly** the same animation: given the same random number generator,
-they yield the same positions, rotations, scales and opacities frame by frame
-(`macos/Tests/compare.sh`).
+## Web version
 
-The **options panel** is rebuilt from the original too: the three tabs (Appearance, Animation,
-Advanced), the position of every control, the ranges and the default values all come from the
-interface file inside the bundle. Like the original it is **in English and French**, with the
-original wording, plus **Italian**.
+https://robertodisanto.it/IcoNVader-rebuild/ — **P** opens the options, **F** goes full screen,
+**Space** restarts the animation. You can also open `web/iconvader/index.html` locally.
 
-### Web version
+## How it was rebuilt
 
-Published on GitHub Pages: **https://robertodisanto.it/IcoNVader-rebuild/**. The
-**Pubblica su Pages** workflow updates it on every push to `main` that changes `web/`.
+- The original binary was disassembled and read class by class: each of the six animations
+  (**Comets**, **Fireworks**, **Game Of Life**, **Hypnosis**, **DNA**, **Jumpers**) uses the same
+  formulas, timing and even the small quirks of the original.
+- It was rewritten twice, as a web page (JavaScript) and as a macOS screen saver (Swift). With the
+  same random numbers the two produce exactly the same animation, frame by frame.
+- The options panel is rebuilt from the original interface file: same tabs, controls and wording,
+  in English and French like the original, plus Italian.
 
-You can also open `web/iconvader/index.html` locally: no server or installation needed.
+The details (in Italian) are in [`docs/iconvader/README.md`](docs/iconvader/README.md).
 
-| Key | Action |
-|---|---|
-| **P** | open the options panel |
-| **F** | full screen |
-| **Space** or **N** | restart the animation (with "Random", picks a new one) |
-
-The language follows your browser and can be changed in the **Advanced** tab.
-Useful URL parameters: `?behavior=DNA&icons=Daedale&lang=fr`
-(behaviors: `Comets`, `Fireworks`, `GameOfLife`, `Hypnosis`, `DNA`, `Jumpers`;
-icon sets: `Christmas`, `Daedale`; languages: `en`, `fr`, `it`).
-
-### macOS screen saver
-
-**Download.** From the [releases page](https://github.com/RobertoD91/IcoNVader-rebuild/releases/latest)
-download [`IcoNVader-saver.zip`](https://github.com/RobertoD91/IcoNVader-rebuild/releases/latest/download/IcoNVader-saver.zip).
-
-To build a new one with GitHub Actions:
-
-1. go to **Actions → Compila salvaschermo macOS → Run workflow**;
-2. when it finishes, download the **IcoNVader-saver** artifact (it contains `IcoNVader-saver.zip`).
-
-If you tick **release** (and enter a **tag**, for example `v3.0.3`), the zip is also published as a
-GitHub release. The **screenshot** artifact contains a picture of every behavior and of every tab of
-the options panel, in every language, taken during the automated test.
-
-**Install.** Unzip it and double-click `IcoNVader.saver`: it is installed for the current user
-in `~/Library/Screen Savers/`. Then pick it in **System Settings → Screen Saver**; the **Options**
-button opens the panel in your system language.
-
-The release notes say whether that build is signed with a Developer ID and notarized by Apple. If it
-is not (ad-hoc signature), macOS blocks it the first time; remove the quarantine flag before
-installing:
-
-```bash
-xattr -dr com.apple.quarantine ~/Downloads/IcoNVader.saver
-```
-
-**Updating.** macOS keeps the previous version loaded until the screen saver process restarts. After
-installing a new version, close System Settings and run:
-
-```bash
-killall legacyScreenSaver
-```
-
-**Signing (maintainers).** The build workflow signs and notarizes the bundle when the repository
-has the Developer ID certificate and an App Store Connect API key as secrets; see
-[`docs/firma-macos.md`](docs/firma-macos.md) (in Italian).
-
-**Custom icon sets.** Just like the original, create a folder of `.icns` or `.png` files in
-`~/Library/Application Support/IcoNVader/Icon Sets/<Set name>/` and it will show up in the
-**Icons** menu of the panel.
-
-**Build it locally** (requires Xcode):
-
-```bash
-brew install xcodegen
-```
+## For developers
 
 ```bash
 cd macos && xcodegen generate && open IcoNVader.xcodeproj
 ```
 
-## Repository layout
-
-```
-IcoNVader.saver/                 original bundle (unmodified)
-docs/iconvader/                  reverse engineering: architecture, preferences, method (Italian)
-docs/iconvader/comportamenti/    detailed pseudocode of every behavior (English)
-i18n/stringhe.json               English, French and Italian strings (single source)
-web/iconvader/                   web version
-macos/Sources/Core/              Swift core (Foundation only, also builds on Linux)
-macos/Sources/Saver/             ScreenSaver view, drawing and options panel (AppKit)
-macos/Resources/                 macOS translations (generated)
-macos/Tests/                     Swift/JS comparison and test of the compiled bundle
-tools/                           annotated disassembly, icons and translations
-.github/workflows/               macOS build (manual) and Pages publishing
-```
-
-## Learn more
-
-[`docs/iconvader/README.md`](docs/iconvader/README.md) (in Italian) explains how the reverse
-engineering was done: the binary format, how to make the disassembly readable, the architecture of
-the original, its options and the quirks that were kept on purpose.
-
 ```bash
-tools/reversing/disassembla.sh     # annotated disassembly in build/reversing/ (needs llvm-objdump)
+macos/Tests/compare.sh
 ```
 
-```bash
-macos/Tests/compare.sh             # Swift vs JavaScript comparison (needs swiftc and node)
-```
-
-```bash
-python3 tools/genera_traduzioni.py # regenerate translations from i18n/stringhe.json
-```
-
-## Legal notes
-
-IcoNVader 3.0 is © 2004-2006 Daedale. This repository is not affiliated with or endorsed by
-Daedale. It is an educational preservation project for software that is no longer distributed or
-maintained: the binary and the icons included are those of the original package and remain the
-property of their respective owners. The code of the rebuild (web version, macOS screen saver and
-tools) was written from scratch and contains no code from the original.
+The first builds the screen saver in Xcode (needs `brew install xcodegen`); the second checks that
+the Swift and JavaScript versions stay identical. The **Compila salvaschermo macOS** workflow
+builds, tests, signs, notarizes and optionally publishes a release; signing is described in
+[`docs/firma-macos.md`](docs/firma-macos.md).
 
 ## License
 
-The code and documentation of the rebuild are released under the **MIT** license
-(see [`LICENSE`](LICENSE)). The license does **not** apply to the original Daedale material: the
-`IcoNVader.saver` bundle, its binary, icons and images, including their copies and conversions
-(`web/iconvader/icons/` and the icons bundled in the compiled screen saver).
+The code of this rebuild is released under the [MIT license](LICENSE). It does not cover the
+original material by Daedale (the `IcoNVader.saver` bundle, its binary and icons, and their
+conversions), which remains the property of its owners. IcoNVader 3.0 is © 2004-2006 Daedale; this
+project is not affiliated with or endorsed by Daedale.

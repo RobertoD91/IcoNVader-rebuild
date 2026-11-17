@@ -177,8 +177,8 @@ final class ConfigureSheetController: NSObject {
         add(label("label.iconSize", "sizeLabel"), to: v)
         configure(scaleSlider, IVPreferences.scaleFactorRange.lowerBound, IVPreferences.scaleFactorRange.upperBound)
         add(scaleSlider, "sizeSlider", to: v)
-        add(endLabel("end.small", "small", .left), to: v)
-        add(endLabel("end.large", "large", .right), to: v)
+        add(endLabel("end.small", "small", .left, under: "sizeSlider"), to: v)
+        add(endLabel("end.large", "large", .right, under: "sizeSlider"), to: v)
 
         add(label("label.background", "backgroundLabel"), to: v)
         add(colorWell, "colorWell", to: v)
@@ -191,20 +191,20 @@ final class ConfigureSheetController: NSObject {
         add(label("label.invasion", "invasionLabel"), to: v)
         configure(densitySlider, Double(IVPreferences.densityRange.lowerBound), Double(IVPreferences.densityRange.upperBound))
         add(densitySlider, "invasionSlider", to: v)
-        add(endLabel("end.scattered", "scattered", .left), to: v)
-        add(endLabel("end.rampant", "rampant", .right), to: v)
+        add(endLabel("end.scattered", "scattered", .left, under: "invasionSlider"), to: v)
+        add(endLabel("end.rampant", "rampant", .right, under: "invasionSlider"), to: v)
 
         add(label("label.life", "lifeLabel"), to: v)
         configure(lifeSlider, Double(IVPreferences.lifeExpectancyRange.lowerBound), Double(IVPreferences.lifeExpectancyRange.upperBound))
         add(lifeSlider, "lifeSlider", to: v)
-        add(endLabel("end.bornDead", "bornDead", .left), to: v)
-        add(endLabel("end.ancient", "ancient", .right), to: v)
+        add(endLabel("end.bornDead", "bornDead", .left, under: "lifeSlider"), to: v)
+        add(endLabel("end.ancient", "ancient", .right, under: "lifeSlider"), to: v)
 
         add(label("label.speed", "speedLabel"), to: v)
         configure(speedSlider, Double(IVPreferences.animationSpeedRange.lowerBound), Double(IVPreferences.animationSpeedRange.upperBound))
         add(speedSlider, "speedSlider", to: v)
-        add(endLabel("end.slow", "slow", .left), to: v)
-        add(endLabel("end.fast", "fast", .right), to: v)
+        add(endLabel("end.slow", "slow", .left, under: "speedSlider"), to: v)
+        add(endLabel("end.fast", "fast", .right, under: "speedSlider"), to: v)
 
         add(label("label.behavior", "behaviorLabel"), to: v)
         behaviorPopUp.addItem(withTitle: L10n.behaviorName("Random"))
@@ -251,7 +251,8 @@ final class ConfigureSheetController: NSObject {
         add(credit, "credit", to: v)
 
         // Aggiunta della ricostruzione (non presente nell'originale): nota e link al repository.
-        let note = NSTextField(labelWithString: L10n.t("credit.rebuild"))
+        let version = Bundle(for: IcoNVaderView.self).infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
+        let note = NSTextField(labelWithString: L10n.t("credit.rebuild").replacingOccurrences(of: "{version}", with: version))
         note.font = .systemFont(ofSize: 10)
         note.alignment = .center
         note.frame = NSRect(x: 5, y: 38, width: 400, height: 13)
@@ -291,18 +292,20 @@ final class ConfigureSheetController: NSObject {
         return f
     }
 
-    /// Etichetta piccola agli estremi di uno slider.
-    private func endLabel(_ key: String, _ frameKey: String, _ alignment: NSTextAlignment) -> NSTextField {
+    /// Etichetta piccola agli estremi di uno slider. Come nel nib sta sotto lo slider, all'altezza
+    /// originale; in orizzontale è ancorata allo slider (la sinistra al suo bordo sinistro, la destra
+    /// al suo bordo destro) e occupa al massimo metà della sua larghezza, così i testi tradotti più
+    /// lunghi non escono dal riquadro della scheda.
+    private func endLabel(_ key: String, _ frameKey: String, _ alignment: NSTextAlignment, under sliderKey: String) -> NSTextField {
         let f = NSTextField(labelWithString: L10n.t(key))
         f.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
         f.alignment = alignment
-        var r = layout[frameKey]
-        // Il testo tradotto può essere più lungo: si allarga verso l'esterno dello slider.
-        let needed = ceil(f.intrinsicContentSize.width)
-        if needed > r.width {
-            if alignment == .right { r.size.width = needed } else { r.origin.x -= needed - r.width; r.size.width = needed }
-        }
-        f.frame = r
+        f.lineBreakMode = .byTruncatingTail
+        let slider = layout[sliderKey]
+        let original = layout[frameKey]
+        let width = floor(slider.width / 2)
+        let x = alignment == .right ? slider.maxX - width : slider.minX
+        f.frame = NSRect(x: x, y: original.minY, width: width, height: max(16, original.height))
         return f
     }
 

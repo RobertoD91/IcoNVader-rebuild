@@ -5,15 +5,19 @@ Uso: python3 tools/genera_traduzioni.py [--verifica]
 
 Scrive:
   macos/Resources/<lingua>.lproj/Localizable.strings   (UTF-8)
-  web/iconvader/js/i18n.js
+  web/iconvader/js/i18n.js                              (testi + numero di versione)
+Il numero di versione viene da CFBundleShortVersionString in macos/project.yml, così la versione
+web e il salvaschermo mostrano sempre lo stesso.
 Con --verifica non scrive nulla e termina con errore se i file generati non sono aggiornati.
 """
 import json
 import os
+import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, 'i18n', 'stringhe.json')
+PROJECT = os.path.join(ROOT, 'macos', 'project.yml')
 HEADER = 'Generato da tools/genera_traduzioni.py a partire da i18n/stringhe.json: non modificare a mano.'
 
 
@@ -37,8 +41,12 @@ def build():
             lines.append(f'"{strings_escape(key)}" = "{strings_escape(values[lang])}";')
         out[os.path.join(ROOT, 'macos', 'Resources', f'{lang}.lproj', 'Localizable.strings')] = '\n'.join(lines) + '\n'
 
+    m = re.search(r'CFBundleShortVersionString:\s*"([^"]+)"', open(PROJECT, encoding='utf-8').read())
+    if not m:
+        sys.exit('CFBundleShortVersionString non trovato in macos/project.yml')
     per_lang = {lang: {k: v[lang] for k, v in table.items()} for lang in langs}
     js = (f'/* {HEADER} */\n'
+          f'window.IcoNVaderVersion = {json.dumps(m.group(1))};\n'
           f'window.IcoNVaderStrings = {json.dumps(per_lang, ensure_ascii=False, indent=2)};\n')
     out[os.path.join(ROOT, 'web', 'iconvader', 'js', 'i18n.js')] = js
     return out

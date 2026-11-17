@@ -3,8 +3,12 @@
 Un salvaschermo scaricato da Internet viene bloccato da Gatekeeper se non è **firmato con un
 certificato Developer ID** e **notarizzato** da Apple. Il workflow **Compila salvaschermo macOS**
 fa entrambe le cose, e anche lo *staple* (allega al bundle il ticket di notarizzazione), se nel
-repository ci sono i secret descritti qui sotto. Senza secret il bundle resta con la firma ad-hoc e
-va sbloccato a mano (vedi il README).
+repository ci sono i secret descritti qui sotto. Senza secret il bundle resta con la firma ad-hoc:
+macOS lo blocca e va sbloccato a mano prima di installarlo, con
+
+```bash
+xattr -dr com.apple.quarantine IcoNVader.saver
+```
 
 ## Come funziona, in breve
 
