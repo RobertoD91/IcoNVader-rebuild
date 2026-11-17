@@ -39,6 +39,15 @@ Funziona da macOS 11 in poi, su Apple Silicon e Intel, ed è firmato e notarizza
 aggiorni da una versione precedente, chiudi Impostazioni di Sistema ed esegui
 `killall legacyScreenSaver`, altrimenti macOS continua a usare quella vecchia.
 
+**Con [Homebrew](https://brew.sh):**
+
+```bash
+brew install --cask robertod91/tap/iconvader
+```
+
+Si aggiorna con `brew upgrade --cask iconvader` e si rimuove con
+`brew uninstall --cask --zap iconvader`.
+
 **Icone personalizzate:** come nell'originale, metti una cartella di file `.icns` o `.png` in
 `~/Library/Application Support/IcoNVader/Icon Sets/` e comparirà nel menu **Icone**.
 

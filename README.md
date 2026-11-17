@@ -38,6 +38,14 @@ It runs on macOS 11 or later, on Apple Silicon and Intel, and is signed and nota
 When updating from a previous version, quit System Settings and run `killall legacyScreenSaver`,
 otherwise macOS keeps the old one loaded.
 
+**With [Homebrew](https://brew.sh):**
+
+```bash
+brew install --cask robertod91/tap/iconvader
+```
+
+Upgrade with `brew upgrade --cask iconvader`, remove with `brew uninstall --cask --zap iconvader`.
+
 **Your own icons:** like the original, put a folder of `.icns` or `.png` files in
 `~/Library/Application Support/IcoNVader/Icon Sets/` and it shows up in the **Icons** menu.
 
