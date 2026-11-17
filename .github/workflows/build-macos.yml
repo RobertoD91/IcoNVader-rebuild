@@ -159,13 +159,27 @@ jobs:
           ditto -c -k --keepParent "$SAVER" "$RUNNER_TEMP/da-notarizzare.zip"
           xcrun notarytool submit "$RUNNER_TEMP/da-notarizzare.zip" \
             --key "$KEY" --key-id "$NOTARY_API_KEY_ID" --issuer "$NOTARY_API_ISSUER_ID" \
-            --wait --timeout 30m --output-format json > "$RUNNER_TEMP/notarizzazione.json" || true
-          cat "$RUNNER_TEMP/notarizzazione.json"
+            --wait --timeout 30m --output-format json \
+            > "$RUNNER_TEMP/notarizzazione.json" 2> "$RUNNER_TEMP/notarizzazione.err" || true
+          cat "$RUNNER_TEMP/notarizzazione.json" "$RUNNER_TEMP/notarizzazione.err"
+          # Nessuna risposta JSON: Apple ha rifiutato la richiesta prima di ricevere il file
+          # (chiave non valida, accordi da accettare, rete...). Il motivo è nel messaggio di notarytool.
+          if [ ! -s "$RUNNER_TEMP/notarizzazione.json" ]; then
+            REASON="$(grep -m1 -i 'error' "$RUNNER_TEMP/notarizzazione.err" || head -1 "$RUNNER_TEMP/notarizzazione.err")"
+            echo "::error::Apple ha rifiutato la richiesta di notarizzazione: ${REASON:-nessun dettaglio}"
+            if grep -qi 'agreement' "$RUNNER_TEMP/notarizzazione.err"; then
+              echo "::error::Va accettato l'accordo aggiornato dell'Apple Developer Program (developer.apple.com/account, titolare dell'account)."
+            fi
+            rm -f "$KEY"
+            exit 1
+          fi
           STATUS="$(plutil -extract status raw -o - "$RUNNER_TEMP/notarizzazione.json" 2>/dev/null || echo sconosciuto)"
           ID="$(plutil -extract id raw -o - "$RUNNER_TEMP/notarizzazione.json" 2>/dev/null || true)"
           if [ "$STATUS" != "Accepted" ]; then
             echo "::error::Notarizzazione non riuscita (stato: $STATUS)."
-            [ -n "$ID" ] && xcrun notarytool log "$ID" --key "$KEY" --key-id "$NOTARY_API_KEY_ID" --issuer "$NOTARY_API_ISSUER_ID" || true
+            if [[ "$ID" =~ ^[0-9a-fA-F-]{36}$ ]]; then
+              xcrun notarytool log "$ID" --key "$KEY" --key-id "$NOTARY_API_KEY_ID" --issuer "$NOTARY_API_ISSUER_ID" || true
+            fi
             rm -f "$KEY"
             exit 1
           fi

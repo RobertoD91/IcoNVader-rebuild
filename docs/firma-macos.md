@@ -150,6 +150,15 @@ esterni:
 
 ## Se qualcosa va storto
 
+- **"A required agreement is missing or has expired" (errore 403):** Apple ha pubblicato un accordo
+  aggiornato che il titolare dell'account deve accettare. Accedi a
+  [developer.apple.com/account](https://developer.apple.com/account) e accetta l'accordo proposto
+  (*Apple Developer Program License Agreement*); controlla anche
+  [App Store Connect → Business](https://appstoreconnect.apple.com/business) per eventuali accordi
+  in sospeso. Poi rilancia il workflow.
+- **"The user name or passphrase you entered is not correct":** `MACOS_CERT_PASSWORD` non è la
+  password di `MACOS_CERT_P12_BASE64`. Ricaricali insieme.
+
 - **Certificato compromesso:** revocalo da developer.apple.com → Certificates, creane un altro con
   il passo 1 e aggiorna i due secret `MACOS_CERT_*`.
 - **Chiave API compromessa:** revocala da App Store Connect → Integrazioni, generane un'altra e
