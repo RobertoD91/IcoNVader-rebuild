@@ -1,5 +1,11 @@
 # Compila il salvaschermo IcoNVader per macOS (universale arm64 + x86_64).
 # Avvio manuale: Actions → "Compila salvaschermo macOS" → Run workflow.
+#
+# Tre job separati:
+#   build   compila e collauda; usa strumenti esterni (XcodeGen da Homebrew) ma NON vede alcun secret
+#   sign    firma, notarizza e ricollauda il bundle; unico job con i secret, usa solo strumenti di
+#           Apple preinstallati e azioni actions/* mantenute da GitHub
+#   release pubblica la release; unico job con permesso di scrittura sul repository
 name: Compila salvaschermo macOS
 
 on:
@@ -19,16 +25,11 @@ on:
         default: ""
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
     runs-on: macos-15
-    env:
-      # Firma Developer ID e notarizzazione partono solo se i secret sono configurati
-      # (vedi docs/firma-macos.md). Senza secret il bundle resta con la firma ad-hoc.
-      HAS_CERT: ${{ secrets.MACOS_CERT_P12_BASE64 != '' && secrets.MACOS_CERT_PASSWORD != '' }}
-      HAS_NOTARY: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 != '' && secrets.APP_STORE_CONNECT_KEY_ID != '' && secrets.APP_STORE_CONNECT_ISSUER_ID != '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -72,6 +73,51 @@ jobs:
           plutil -p "$SAVER/Contents/Info.plist"
           codesign --verify --deep --verbose=2 "$SAVER"
           ls "$SAVER/Contents/Resources/Icon Sets/Christmas" "$SAVER/Contents/Resources/Icon Sets/Daedale"
+
+      - name: Collaudo del bundle (caricamento, animazione, screenshot)
+        run: |
+          swiftc -o build/render macos/Tests/render.swift
+          build/render build/Release/IcoNVader.saver build/screenshot
+
+      - name: Prepara il bundle per il job di firma
+        run: |
+          cd build/Release
+          ditto -c -k --sequesterRsrc --keepParent IcoNVader.saver ../IcoNVader-adhoc.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bundle-adhoc
+          path: build/IcoNVader-adhoc.zip
+          retention-days: 1
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: screenshot
+          path: build/screenshot
+
+  sign:
+    needs: build
+    runs-on: macos-15
+    outputs:
+      signing: ${{ steps.esito.outputs.signing }}
+    env:
+      # Firma Developer ID e notarizzazione partono solo se i secret sono configurati
+      # (vedi docs/firma-macos.md). Senza secret il bundle resta con la firma ad-hoc.
+      HAS_CERT: ${{ secrets.MACOS_CERT_P12_BASE64 != '' && secrets.MACOS_CERT_PASSWORD != '' }}
+      HAS_NOTARY: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 != '' && secrets.APP_STORE_CONNECT_KEY_ID != '' && secrets.APP_STORE_CONNECT_ISSUER_ID != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: bundle-adhoc
+          path: build
+
+      - name: Estrae il bundle
+        run: |
+          ditto -x -k build/IcoNVader-adhoc.zip build/Release
+          rm build/IcoNVader-adhoc.zip
+          codesign --verify --verbose=2 build/Release/IcoNVader.saver
 
       - name: Firma con Developer ID
         if: env.HAS_CERT == 'true'
@@ -128,13 +174,25 @@ jobs:
           xcrun stapler validate "$SAVER"
           spctl --assess --type install --verbose=4 "$SAVER" || echo "(spctl non valuta i bundle .saver come installabili: controllo solo informativo)"
 
-      - name: Collaudo del bundle (caricamento, animazione, screenshot)
+      - name: Rimuove il portachiavi temporaneo
+        if: always() && env.HAS_CERT == 'true'
+        run: security delete-keychain "$RUNNER_TEMP/firma.keychain-db" || true
+
+      - name: Collaudo del bundle finale
         run: |
-          swiftc -o build/render macos/Tests/render.swift
-          build/render build/Release/IcoNVader.saver build/screenshot
+          swiftc -o "$RUNNER_TEMP/render" macos/Tests/render.swift
+          "$RUNNER_TEMP/render" build/Release/IcoNVader.saver "$RUNNER_TEMP/screenshot"
 
       - name: Prepara lo zip
+        id: esito
         run: |
+          if [ "$HAS_CERT" = "true" ] && [ "$HAS_NOTARY" = "true" ]; then
+            echo "signing=notarized" >> "$GITHUB_OUTPUT"
+          elif [ "$HAS_CERT" = "true" ]; then
+            echo "signing=signed" >> "$GITHUB_OUTPUT"
+          else
+            echo "signing=adhoc" >> "$GITHUB_OUTPUT"
+          fi
           cd build/Release
           ditto -c -k --sequesterRsrc --keepParent IcoNVader.saver ../IcoNVader-saver.zip
 
@@ -143,26 +201,31 @@ jobs:
           name: IcoNVader-saver
           path: build/IcoNVader-saver.zip
 
-      - uses: actions/upload-artifact@v4
+  release:
+    needs: sign
+    if: ${{ inputs.release }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
         with:
-          name: screenshot
-          path: build/screenshot
+          name: IcoNVader-saver
+          path: dist
 
       - name: Pubblica la release
-        if: ${{ inputs.release }}
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ inputs.tag }}
           NOTES: ${{ inputs.notes }}
+          SIGNING_STATE: ${{ needs.sign.outputs.signing }}
         run: |
           TAG="${TAG:-v3.0.1-build${GITHUB_RUN_NUMBER}}"
-          if [ "$HAS_CERT" = "true" ] && [ "$HAS_NOTARY" = "true" ]; then
-            SIGNING="Signed with a Developer ID and notarized by Apple: install it with a double-click."
-          elif [ "$HAS_CERT" = "true" ]; then
-            SIGNING="Signed with a Developer ID but not notarized: the first time, allow it in System Settings → Privacy & Security."
-          else
-            SIGNING="Ad-hoc signed and not notarized: remove the quarantine flag before installing (see the README)."
-          fi
+          case "$SIGNING_STATE" in
+            notarized) SIGNING="Signed with a Developer ID and notarized by Apple: install it with a double-click." ;;
+            signed)    SIGNING="Signed with a Developer ID but not notarized: the first time, allow it in System Settings → Privacy & Security." ;;
+            *)         SIGNING="Ad-hoc signed and not notarized: remove the quarantine flag before installing (see the README)." ;;
+          esac
           # Note in inglese: novità passate dall'input "notes" + parte fissa
           {
             if [ -n "$NOTES" ]; then printf '%s\n\n' "$NOTES"; fi
@@ -177,11 +240,8 @@ jobs:
             echo "Unofficial rebuild, not affiliated with Daedale. IcoNVader 3.0 © 2004-2006 Daedale."
           } > "$RUNNER_TEMP/release-notes.md"
           cat "$RUNNER_TEMP/release-notes.md"
-          gh release create "$TAG" build/IcoNVader-saver.zip \
+          gh release create "$TAG" dist/IcoNVader-saver.zip \
+            --repo "$GITHUB_REPOSITORY" \
             --target "$GITHUB_SHA" \
             --title "IcoNVader for macOS ($TAG)" \
             --notes-file "$RUNNER_TEMP/release-notes.md"
-
-      - name: Rimuove il portachiavi temporaneo
-        if: always() && env.HAS_CERT == 'true'
-        run: security delete-keychain "$RUNNER_TEMP/firma.keychain-db" || true

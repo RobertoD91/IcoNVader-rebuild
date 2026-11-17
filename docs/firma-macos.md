@@ -131,14 +131,22 @@ non passa i secret ai workflow avviati da pull request di altri. Nei log i valor
 
 ## Cosa fa il workflow
 
-1. Crea un portachiavi temporaneo sul runner, importa il `.p12` e cerca l'identità
-   *Developer ID Application*.
-2. Firma il bundle con `codesign --timestamp --options runtime` (*hardened runtime*, richiesto
-   per la notarizzazione).
-3. Invia lo zip al servizio di notarizzazione con `xcrun notarytool submit --wait`; se viene
-   rifiutato, stampa il registro di Apple con il motivo.
-4. Allega il ticket con `xcrun stapler staple`, così il controllo funziona anche senza connessione.
-5. Esegue il collaudo sul bundle firmato e alla fine cancella il portachiavi temporaneo.
+Il workflow è diviso in tre job, così il certificato non passa mai da un job che usa strumenti
+esterni:
+
+- **build** compila e collauda il salvaschermo. Installa XcodeGen da Homebrew, quindi **non riceve
+  alcun secret**. Passa al job successivo il bundle con la firma ad-hoc.
+- **sign** è l'unico job che riceve i secret. Usa solo gli strumenti di Apple preinstallati sui
+  runner e le azioni `actions/*` mantenute da GitHub:
+  1. crea un portachiavi temporaneo, importa il `.p12` e cerca l'identità *Developer ID Application*;
+  2. firma il bundle con `codesign --timestamp --options runtime` (*hardened runtime*, richiesto per
+     la notarizzazione);
+  3. invia lo zip al servizio di notarizzazione con `xcrun notarytool submit --wait`; se viene
+     rifiutato, stampa il registro di Apple con il motivo;
+  4. allega il ticket con `xcrun stapler staple`, così il controllo funziona anche senza connessione;
+  5. cancella il portachiavi, ricollauda il bundle firmato e produce lo zip finale.
+- **release** (solo se richiesto) pubblica la release con `gh`. È l'unico job con il permesso di
+  scrittura sul repository e non riceve i secret di firma.
 
 ## Se qualcosa va storto
 

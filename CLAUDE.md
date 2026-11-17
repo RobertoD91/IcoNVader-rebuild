@@ -45,7 +45,7 @@ Nell'ambiente cloud non c'è Swift preinstallato: la toolchain per Linux si scar
 
 ## GitHub Actions
 
-- `build-macos.yml` (avvio **manuale**): `compare.sh`, XcodeGen, `xcodebuild` universale con firma ad-hoc, verifica del bundle e `macos/Tests/render.swift`, che carica il `.saver` come fa il sistema, anima ogni comportamento e salva gli screenshot (artefatto `screenshot`). Produce l'artefatto `IcoNVader-saver` e, se richiesto, una release.
+- `build-macos.yml` (avvio **manuale**), in tre job. `build`: `compare.sh`, XcodeGen, `xcodebuild` universale con firma ad-hoc, verifica del bundle e `macos/Tests/render.swift`, che carica il `.saver` come fa il sistema, anima ogni comportamento e salva gli screenshot (artefatto `screenshot`); non vede secret. `sign`: unico job con i secret, firma/notarizza (se configurati), ricollauda e produce l'artefatto `IcoNVader-saver`; deve usare solo strumenti Apple preinstallati e azioni `actions/*`, niente Homebrew né azioni di terzi. `release`: unico job con `contents: write`, pubblica la release se richiesto.
 - Firma: se ci sono i secret `MACOS_CERT_P12_BASE64`, `MACOS_CERT_PASSWORD` (firma Developer ID) e `APP_STORE_CONNECT_API_KEY_BASE64`, `APP_STORE_CONNECT_KEY_ID`, `APP_STORE_CONNECT_ISSUER_ID` (notarizzazione con `notarytool` e staple), `build-macos.yml` firma e notarizza il bundle; altrimenti resta la firma ad-hoc. Istruzioni in `docs/firma-macos.md`.
 - `pages.yml`: pubblica `web/iconvader` su Pages a ogni push su `main` che tocca `web/`, oppure a mano.
 
