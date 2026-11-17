@@ -27,8 +27,8 @@ jobs:
     env:
       # Firma Developer ID e notarizzazione partono solo se i secret sono configurati
       # (vedi docs/firma-macos.md). Senza secret il bundle resta con la firma ad-hoc.
-      HAS_CERT: ${{ secrets.MACOS_CERTIFICATE_P12 != '' && secrets.MACOS_CERTIFICATE_PASSWORD != '' }}
-      HAS_NOTARY: ${{ secrets.NOTARY_API_KEY != '' && secrets.NOTARY_API_KEY_ID != '' && secrets.NOTARY_API_ISSUER_ID != '' }}
+      HAS_CERT: ${{ secrets.MACOS_CERT_P12_BASE64 != '' && secrets.MACOS_CERT_PASSWORD != '' }}
+      HAS_NOTARY: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 != '' && secrets.APP_STORE_CONNECT_KEY_ID != '' && secrets.APP_STORE_CONNECT_ISSUER_ID != '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -76,8 +76,8 @@ jobs:
       - name: Firma con Developer ID
         if: env.HAS_CERT == 'true'
         env:
-          P12_BASE64: ${{ secrets.MACOS_CERTIFICATE_P12 }}
-          P12_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          P12_BASE64: ${{ secrets.MACOS_CERT_P12_BASE64 }}
+          P12_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
         run: |
           SAVER=build/Release/IcoNVader.saver
           KEYCHAIN="$RUNNER_TEMP/firma.keychain-db"
@@ -103,9 +103,9 @@ jobs:
       - name: Notarizzazione e staple
         if: env.HAS_CERT == 'true' && env.HAS_NOTARY == 'true'
         env:
-          NOTARY_API_KEY: ${{ secrets.NOTARY_API_KEY }}
-          NOTARY_API_KEY_ID: ${{ secrets.NOTARY_API_KEY_ID }}
-          NOTARY_API_ISSUER_ID: ${{ secrets.NOTARY_API_ISSUER_ID }}
+          NOTARY_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
+          NOTARY_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          NOTARY_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
         run: |
           SAVER=build/Release/IcoNVader.saver
           KEY="$RUNNER_TEMP/AuthKey.p8"

@@ -46,7 +46,7 @@ Nell'ambiente cloud non c'è Swift preinstallato: la toolchain per Linux si scar
 ## GitHub Actions
 
 - `build-macos.yml` (avvio **manuale**): `compare.sh`, XcodeGen, `xcodebuild` universale con firma ad-hoc, verifica del bundle e `macos/Tests/render.swift`, che carica il `.saver` come fa il sistema, anima ogni comportamento e salva gli screenshot (artefatto `screenshot`). Produce l'artefatto `IcoNVader-saver` e, se richiesto, una release.
-- Firma: se ci sono i secret `MACOS_CERTIFICATE_P12`, `MACOS_CERTIFICATE_PASSWORD` (firma Developer ID) e `NOTARY_API_KEY`, `NOTARY_API_KEY_ID`, `NOTARY_API_ISSUER_ID` (notarizzazione con `notarytool` e staple), `build-macos.yml` firma e notarizza il bundle; altrimenti resta la firma ad-hoc. Istruzioni in `docs/firma-macos.md`.
+- Firma: se ci sono i secret `MACOS_CERT_P12_BASE64`, `MACOS_CERT_PASSWORD` (firma Developer ID) e `APP_STORE_CONNECT_API_KEY_BASE64`, `APP_STORE_CONNECT_KEY_ID`, `APP_STORE_CONNECT_ISSUER_ID` (notarizzazione con `notarytool` e staple), `build-macos.yml` firma e notarizza il bundle; altrimenti resta la firma ad-hoc. Istruzioni in `docs/firma-macos.md`.
 - `pages.yml`: pubblica `web/iconvader` su Pages a ogni push su `main` che tocca `web/`, oppure a mano.
 
 La pagina web si apre direttamente da file (`web/iconvader/index.html`); parametri utili per provare un singolo comportamento: `?behavior=DNA&icons=Daedale`. Nell'ambiente cloud la verifica visiva si fa con Playwright (già installato) caricando l'URL `file://`.

@@ -79,34 +79,39 @@ Con [GitHub CLI](https://cli.github.com/) (`brew install gh && gh auth login`), 
 prima:
 
 ```bash
-base64 -i developer-id.p12 | gh secret set MACOS_CERTIFICATE_P12 -R RobertoD91/IcoNVader-rebuild
+base64 -i developer-id.p12 | gh secret set MACOS_CERT_P12_BASE64 -R RobertoD91/IcoNVader-rebuild
 ```
 
 ```bash
-gh secret set MACOS_CERTIFICATE_PASSWORD -R RobertoD91/IcoNVader-rebuild --body "$(cat p12-password.txt)"
+gh secret set MACOS_CERT_PASSWORD -R RobertoD91/IcoNVader-rebuild --body "$(cat p12-password.txt)"
 ```
 
 ```bash
-base64 -i AuthKey_XXXXXXXXXX.p8 | gh secret set NOTARY_API_KEY -R RobertoD91/IcoNVader-rebuild
+base64 -i AuthKey_XXXXXXXXXX.p8 | gh secret set APP_STORE_CONNECT_API_KEY_BASE64 -R RobertoD91/IcoNVader-rebuild
 ```
 
 ```bash
-gh secret set NOTARY_API_KEY_ID -R RobertoD91/IcoNVader-rebuild --body "XXXXXXXXXX"
+gh secret set APP_STORE_CONNECT_KEY_ID -R RobertoD91/IcoNVader-rebuild --body "XXXXXXXXXX"
 ```
 
 ```bash
-gh secret set NOTARY_API_ISSUER_ID -R RobertoD91/IcoNVader-rebuild --body "ID-EMITTENTE"
+gh secret set APP_STORE_CONNECT_ISSUER_ID -R RobertoD91/IcoNVader-rebuild --body "ID-EMITTENTE"
 ```
 
 In alternativa: **Settings → Secrets and variables → Actions → New repository secret**.
 
+I nomi sono gli stessi usati da PicaSim per la firma macOS (`RELEASE_SIGNING.md` di quel
+repository): se i due progetti usano lo stesso certificato e la stessa chiave, basta ripetere
+questi comandi con `-R RobertoD91/PicaSim`. La chiave API di PicaSim ha ruolo App Manager, che
+include anche la notarizzazione.
+
 | Secret | Contenuto |
 |---|---|
-| `MACOS_CERTIFICATE_P12` | `developer-id.p12` in base64 |
-| `MACOS_CERTIFICATE_PASSWORD` | la password in `p12-password.txt` |
-| `NOTARY_API_KEY` | il file `.p8` in base64 |
-| `NOTARY_API_KEY_ID` | l'ID chiave |
-| `NOTARY_API_ISSUER_ID` | l'ID emittente |
+| `MACOS_CERT_P12_BASE64` | `developer-id.p12` in base64 |
+| `MACOS_CERT_PASSWORD` | la password in `p12-password.txt` |
+| `APP_STORE_CONNECT_API_KEY_BASE64` | il file `.p8` in base64 |
+| `APP_STORE_CONNECT_KEY_ID` | l'ID chiave |
+| `APP_STORE_CONNECT_ISSUER_ID` | l'ID emittente |
 
 Poi cancella la cartella, oppure conservala su un supporto cifrato se vuoi poter ricreare i secret
 senza generare un nuovo certificato:
@@ -138,6 +143,6 @@ non passa i secret ai workflow avviati da pull request di altri. Nei log i valor
 ## Se qualcosa va storto
 
 - **Certificato compromesso:** revocalo da developer.apple.com → Certificates, creane un altro con
-  il passo 1 e aggiorna i due secret `MACOS_CERTIFICATE_*`.
+  il passo 1 e aggiorna i due secret `MACOS_CERT_*`.
 - **Chiave API compromessa:** revocala da App Store Connect → Integrazioni, generane un'altra e
-  aggiorna i tre secret `NOTARY_API_*`.
+  aggiorna i tre secret `APP_STORE_CONNECT_*`.
