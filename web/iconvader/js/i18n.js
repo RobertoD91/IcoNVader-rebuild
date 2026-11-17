@@ -1,5 +1,5 @@
 /* Generato da tools/genera_traduzioni.py a partire da i18n/stringhe.json: non modificare a mano. */
-window.IcoNVaderVersion = "3.0.4";
+window.IcoNVaderVersion = "3.0.5";
 window.IcoNVaderStrings = {
   "en": {
     "tab.appearance": "Appearance",
