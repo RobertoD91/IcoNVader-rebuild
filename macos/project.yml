@@ -29,8 +29,8 @@ targets:
       properties:
         CFBundleName: IcoNVader
         CFBundleDisplayName: IcoNVader
-        CFBundleShortVersionString: "3.0.3"
-        CFBundleVersion: "3"
+        CFBundleShortVersionString: "3.0.4"
+        CFBundleVersion: "4"
         CFBundleDevelopmentRegion: en
         CFBundleLocalizations: [en, fr, it]
         NSPrincipalClass: IcoNVaderRestoredView
